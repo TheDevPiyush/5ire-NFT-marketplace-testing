@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
     Sidebar,
@@ -10,7 +10,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 import {
     DropdownMenu,
@@ -19,95 +19,60 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useWallet } from "@/hooks/WalletConnectHook"
-import { truncateAddress } from "@/lib/truncateAdderss"
-import Link from "next/link"
+} from "@/components/ui/dropdown-menu";
+import { useWallet } from "@/hooks/WalletConnectHook";
+import { truncateAddress } from "@/lib/truncateAdderss";
+import Link from "next/link";
 
-import { useTheme } from "next-themes"
-import { Button } from "./ui/button"
-import { Moon, MoonIcon, Sun } from "lucide-react"
-
-
+import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
+import { Moon, Sun } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export function AppSidebar() {
-
     const { walletAddress } = useWallet();
-    const { setTheme } = useTheme()
+    const { setTheme } = useTheme();
 
+    const location = usePathname();
 
     const dropdownMenuItems = [
-        {
-            title: "Account",
-            url: `/account/${walletAddress}`,
-            icon: "fa-duotone fa-light fa-user",
-        },
-        {
-            title: "My NFTs",
-            url: "/my-nfts",
-            icon: "fa-duotone fa-thin fa-image",
-        },
-        {
-            title: "Help & Contact",
-            url: "/help",
-            icon: "fa-duotone fa-thin fa-circle-info",
-        },
-        {
-            title: "Log Out",
-            url: "/logout",
-            icon: "fa-duotone fa-light fa-right-from-bracket",
-        },
+        { title: "Account", url: `/account/${walletAddress}`, icon: "fa-duotone fa-light fa-user", },
+        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
+        { title: "Help & Contact", url: "/help", icon: "fa-duotone fa-thin fa-circle-info", },
+        { title: "Log Out", url: "/logout", icon: "fa-duotone fa-light fa-right-from-bracket", },
     ];
 
     const SidebarMenuiItems = [
-        {
-            title: "Home",
-            url: "/",
-            icon: "fa-duotone fa-thin fa-house",
-        },
-        {
-            title: "Create NFT",
-            url: "/create",
-            icon: "fa-duotone fa-thin fa-paintbrush-fine",
-        },
-        {
-            title: "Marketplace",
-            url: "/marketplace",
-            icon: "fa-duotone fa-light fa-store",
-        },
-        {
-            title: "My NFTs",
-            url: "/my-nfts",
-            icon: "fa-duotone fa-thin fa-image",
-        },
-        {
-            title: "Sell NFT",
-            url: "/sell",
-            icon: "fa-duotone fa-solid fa-money-bill-transfer",
-        },
+        { title: "Home", url: "/", icon: "fa-duotone fa-thin fa-house", },
+        { title: "Create NFT", url: "/create", icon: "fa-duotone fa-thin fa-paintbrush-fine", },
+        { title: "Marketplace", url: "/marketplace", icon: "fa-duotone fa-light fa-store", },
+        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
+        { title: "Sell NFT", url: "/sell", icon: "fa-duotone fa-solid fa-money-bill-transfer", },
     ];
     return (
         <Sidebar collapsible="icon">
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupContent>
+                        <SidebarGroupLabel>Application</SidebarGroupLabel>
                         <SidebarMenu>
                             {SidebarMenuiItems.map((item) => (
                                 <SidebarMenuItem key={item.title}>
                                     <SidebarMenuButton asChild>
-                                        <Link href={item.url}>
+                                        <Link
+                                            className={`flex text-[1rem] items-center gap-1 ${location === item.url ? "bg-accent" : ''} `}
+                                            href={item.url}
+                                        >
                                             <i className={item.icon}></i>
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
-
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
-
 
             <SidebarFooter>
                 <DropdownMenu>
@@ -118,7 +83,9 @@ export function AppSidebar() {
                                     <SidebarMenuButton className="flex SidebarMenuiItems-center justify-between py-5">
                                         <span className="flex items-center space-x-2">
                                             <i className="fa fa-user" aria-hidden="true" />
-                                            <span>{truncateAddress(walletAddress) || "Not connected"}</span>
+                                            <span>
+                                                {truncateAddress(walletAddress) || "Not connected"}
+                                            </span>
                                         </span>
                                         <i className="fa-sharp-duotone text-zinc-300 fa-regular fa-chevrons-up" />
                                     </SidebarMenuButton>
@@ -126,12 +93,17 @@ export function AppSidebar() {
                             </SidebarMenu>
                         </div>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>{truncateAddress(walletAddress) || "Not connected"}</DropdownMenuLabel>
+                    <DropdownMenuContent className="w-50">
+                        <DropdownMenuLabel>
+                            {truncateAddress(walletAddress) || "Not connected"}
+                        </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         {dropdownMenuItems.map((item, index) => (
-                            <DropdownMenuItem key={index}>
-                                <Link href={item.url} className="flex gap-2 p-[2px] SidebarMenuiItems-center justify-start w-full">
+                            <DropdownMenuItem className={` ${location === item.url ? "bg-accent" : ''}`} key={index}>
+                                <Link
+                                    href={item.url}
+                                    className={`flex gap-2 p-[2px] SidebarMenuiItems-center justify-start w-full`}
+                                >
                                     <i className={item.icon}></i>
                                     <span>{item.title}</span>
                                 </Link>
@@ -147,7 +119,7 @@ export function AppSidebar() {
                                         <span className="sr-only">Toggle theme</span>
                                     </Button>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
+                                <DropdownMenuContent className="w-50" align="end">
                                     <DropdownMenuItem onClick={() => setTheme("light")}>
                                         Light
                                     </DropdownMenuItem>
@@ -162,8 +134,7 @@ export function AppSidebar() {
                         </div>
                     </DropdownMenuContent>
                 </DropdownMenu>
-
             </SidebarFooter>
         </Sidebar>
-    )
+    );
 }

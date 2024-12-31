@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/App-sidebar"
 import { ThemeProvider } from "@/components/Theme-provider";
 import { WalletProvider } from "@/hooks/WalletConnectHook";
+import Navbar from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -90,19 +91,19 @@ export default function RootLayout({ children }) {
           href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
           enableSystem
-          disableTransitionOnChange>
+          disableTransitionOnChange={true}>
           <WalletProvider>
             <SidebarProvider >
               <AppSidebar />
-              <SidebarTrigger className="scale-150 mt-5" />
-              {children}
+              <div className="wrap flex-col">
+                <Navbar />  
+                {children}
+              </div>
             </SidebarProvider>
           </WalletProvider>
         </ThemeProvider>
