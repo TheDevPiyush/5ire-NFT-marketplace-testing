@@ -6,8 +6,12 @@ This is the initial setup for an NFT Marketplace application built using Next.js
 
 ```
 git clone https://github.com/TheDevPiyush/nft-marketplace.git
+```
+```
 cd nft-marketplace
+```
+```
 npm run dev
 ```
 
-##Please ensure there is no errors in the final PR.
+##Please ensure there are no errors in the final sent PR.
