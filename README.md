@@ -11,6 +11,9 @@ git clone https://github.com/TheDevPiyush/nft-marketplace.git
 cd nft-marketplace
 ```
 ```
+npm i
+```
+```
 npm run dev
 ```
 
