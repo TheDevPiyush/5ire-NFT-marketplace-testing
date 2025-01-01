@@ -5,6 +5,7 @@ import { AppSidebar } from "@/components/App-sidebar"
 import { ThemeProvider } from "@/components/Theme-provider";
 import { WalletProvider } from "@/hooks/WalletConnectHook";
 import Navbar from "@/components/Navbar";
+import { SearchProvider } from "@/hooks/SearchContextHook";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -94,16 +95,18 @@ export default function RootLayout({ children }) {
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange={true}>
           <WalletProvider>
             <SidebarProvider >
               <AppSidebar />
-              <div className="wrap flex-col">
-                <Navbar />  
-                {children}
-              </div>
+              <SearchProvider>
+                <div className="wrap w-full flex-col">
+                  <Navbar />
+                  {children}
+                </div>
+              </SearchProvider>
             </SidebarProvider>
           </WalletProvider>
         </ThemeProvider>

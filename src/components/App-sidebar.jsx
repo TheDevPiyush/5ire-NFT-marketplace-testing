@@ -50,17 +50,17 @@ export function AppSidebar() {
         { title: "Sell NFT", url: "/sell", icon: "fa-duotone fa-solid fa-money-bill-transfer", },
     ];
     return (
-        <Sidebar collapsible="icon">
+        <Sidebar className='backdrop-filter-blur' collapsible="icon">
             <SidebarContent>
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarGroupLabel>Application</SidebarGroupLabel>
                         <SidebarMenu>
                             {SidebarMenuiItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild>
+                                <SidebarMenuItem className='hover:bg-mute focus:bg-mute' key={item.title}>
+                                    <SidebarMenuButton className='hover:bg-mute focus:bg-mute' asChild>
                                         <Link
-                                            className={`flex text-[1rem] items-center gap-1 ${location === item.url ? "bg-accent" : ''} `}
+                                            className={`flex text-[1rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location === item.url ? "bg-accent" : ''} `}
                                             href={item.url}
                                         >
                                             <i className={item.icon}></i>
