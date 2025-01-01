@@ -7,9 +7,11 @@ import {
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
+    SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from "@/components/ui/sidebar";
 
 import {
@@ -28,10 +30,11 @@ import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function AppSidebar() {
     const { walletAddress } = useWallet();
-    const { setTheme } = useTheme();
+    const { setTheme, theme } = useTheme();
 
     const location = usePathname();
 
@@ -52,6 +55,15 @@ export function AppSidebar() {
     return (
         <Sidebar className='backdrop-filter-blur' collapsible="icon">
             <SidebarContent>
+                <SidebarHeader className='flex justify-center'>
+                    {
+                        theme === "dark" ?
+                            <Image width={85} height={85} alt="5ire Logo" className="rounded-lg dark:opacity-100" src={'https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75'} />
+                            :
+                            <Image width={85} height={85} alt="5ire Logo" className="rounded-lg dark:opacity-100" src={'https://upload.wikimedia.org/wikipedia/commons/1/12/5ire-logo2024.png'} />
+                    }
+                </SidebarHeader>
+                <SidebarSeparator />
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -60,9 +72,8 @@ export function AppSidebar() {
                                 <SidebarMenuItem className='hover:bg-mute focus:bg-mute' key={item.title}>
                                     <SidebarMenuButton className='hover:bg-mute focus:bg-mute' asChild>
                                         <Link
-                                            className={`flex text-[1rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location === item.url ? "bg-accent" : ''} `}
-                                            href={item.url}
-                                        >
+                                            className={`flex text-[1.05rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location === item.url ? "bg-secondary font-extrabold" : ''} `}
+                                            href={item.url}>
                                             <i className={item.icon}></i>
                                             <span>{item.title}</span>
                                         </Link>
@@ -93,6 +104,9 @@ export function AppSidebar() {
                             </SidebarMenu>
                         </div>
                     </DropdownMenuTrigger>
+
+                    {/* ACCOUNT FOOTER BUTTON DROPDOWN HERE */}
+
                     <DropdownMenuContent className="w-50">
                         <DropdownMenuLabel>
                             {truncateAddress(walletAddress) || "Not connected"}
@@ -110,6 +124,9 @@ export function AppSidebar() {
                             </DropdownMenuItem>
                         ))}
                         <DropdownMenuSeparator />
+
+
+                        {/* APP THEME DROPDOWN HERE */}
                         <div className="theme-wrap flex justify-between">
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -126,9 +143,14 @@ export function AppSidebar() {
                                     <DropdownMenuItem onClick={() => setTheme("dark")}>
                                         Dark
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTheme("system")}>
+
+                                    {/* This will cause problem with the CORRECT 5ire Logo in Side Bar */}
+                                    {/* SHOULD BE AVOIDED TO BE USED IN PROD */}
+
+                                    {/* <DropdownMenuItem onClick={() => setTheme("system")}>
                                         System
-                                    </DropdownMenuItem>
+                                    </DropdownMenuItem> */}
+
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         </div>

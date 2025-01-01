@@ -12,11 +12,9 @@ export default function page() {
     <>
       <div>
         <h1 className='font-medium text-[24px]'>
+          HELLO
           <p>Search Query: {searchQuery}</p>
-
         </h1>
-        page
-        <WalletConnect />
       </div>
     </>
   )
