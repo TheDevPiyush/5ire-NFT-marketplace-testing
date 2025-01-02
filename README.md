@@ -11,7 +11,8 @@ git clone https://github.com/TheDevPiyush/nft-marketplace.git
 cd nft-marketplace
 ```
 ```
-npm i
+npm i -- force
+<!-- --force is required because shadcn-ui has dependencies issues with Next.js v15 and React v19 -->
 ```
 ```
 npm run dev
