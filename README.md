@@ -6,7 +6,7 @@ A Next.js-based NFT Marketplace project, leveraging **shadcn-ui**. This guide wi
 
 1. **Clone the repository :**
    ```
-   git clone [https://github.com/TheDevPiyush/nft-marketplace.git](https://github.com/5ire-tech/marketplace-app.git)
+   git clone https://github.com/5ire-tech/marketplace-app.git
    ```
 2. **Move inside the project folder :**
    ```
