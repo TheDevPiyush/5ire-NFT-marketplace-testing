@@ -7,13 +7,17 @@ This is the initial setup for a 5ire NFT Marketplace application built using Nex
 ```
 git clone https://github.com/TheDevPiyush/nft-marketplace.git
 ```
+
 ```
 cd nft-marketplace
 ```
+
 ```
 npm i -- force
-<!-- --force is required because shadcn-ui has dependencies issues with Next.js v15 and React v19 -->
 ```
+
+<!-- --force is required because shadcn-ui has dependencies issues with Next.js v15 and React v19 -->
+
 ```
 npm run dev
 ```
