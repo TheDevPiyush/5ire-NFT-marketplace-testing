@@ -1,25 +1,22 @@
-## 5ire NFT Marketplace
+# 5ire NFT Marketplace
 
-This is the initial setup for a 5ire NFT Marketplace application built using Next.js and Shadcn UI. The project is currently in its foundational stage, with the basic configuration and dependencies set up.
+A Next.js-based NFT Marketplace project, leveraging **shadcn-ui**. This guide will help you get started quickly.
 
-## How to get started
+## Getting Started
 
-```
-git clone https://github.com/TheDevPiyush/nft-marketplace.git
-```
-
-```
-cd nft-marketplace
-```
-
-```
-npm i -- force
-```
-
-### '--force' is required because shadcn-ui has dependencies issues with Next.js v15 and React v19
-
-```
-npm run dev
-```
-
-## Please ensure there are no errors in the final sent PR.
+1. **Clone the repository :**
+   ```
+   git clone https://github.com/TheDevPiyush/nft-marketplace.git
+   ```
+2. **Move inside the project folder :**
+   ```
+   cd marketplace-app
+   ```
+3. **Install the required dependencies using ```--force``` because shadcn-ui has dependencies issues with React v19 & Next v15 :**
+   ```
+   npm i --force
+   ```
+4. **Run the App on the developement server:**
+   ```
+   npm run dev
+   ```
