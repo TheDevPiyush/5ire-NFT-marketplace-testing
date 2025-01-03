@@ -1,21 +1,21 @@
 "use client"
 
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
-import { Avatar } from "@/components/ui/avatar";
-import { SidebarTrigger } from './ui/sidebar';
-import { SearchContext } from '@/hooks/SearchContextHook';
-import { DialogTitle } from '@radix-ui/react-dialog';
-import { useWallet } from '@/hooks/WalletConnectHook';
-import { BrowserProvider } from 'ethers';
-import { truncateAddress } from '@/lib/truncateAdderss';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {Button} from "@/components/ui/button";
+import {Dialog, DialogContent, DialogTrigger} from "@/components/ui/dialog";
+import {Command, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator} from "@/components/ui/command";
+import {Avatar} from "@/components/ui/avatar";
+import {SidebarTrigger} from './ui/sidebar';
+import {SearchContext} from '@/hooks/SearchContextHook';
+import {DialogTitle} from '@radix-ui/react-dialog';
+import {useWallet} from '@/hooks/WalletConnectHook';
+import {BrowserProvider} from 'ethers';
+import {truncateAddress} from '@/lib/truncateAddress';
 
 const Navbar = () => {
 
-    const { setSearchQuery } = useContext(SearchContext);
-    const { walletAddress, updateWalletAddress } = useWallet();
+    const {setSearchQuery} = useContext(SearchContext);
+    const {walletAddress, updateWalletAddress} = useWallet();
     const dialogTriggerRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const ExampleSearchSuggestions = [
@@ -90,7 +90,7 @@ const Navbar = () => {
                         <CommandList>
                             <CommandGroup className='font-mono' heading="Suggestions">
                                 {ExampleSearchSuggestions.map((item) => (
-                                    <CommandItem onSelect={() => { setSearchQuery(item); dialogTriggerRef.current.click() }} key={item} className='text-left py-2'>
+                                    <CommandItem onSelect={() => {setSearchQuery(item); dialogTriggerRef.current.click()}} key={item} className='text-left py-2'>
                                         {item}
                                     </CommandItem>
                                 ))}
