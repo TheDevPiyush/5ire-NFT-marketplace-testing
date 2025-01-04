@@ -4,7 +4,6 @@
 
 /* @import url("https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,1..1000;1,1..1000&display=swap"); */
 body {
-  font-family: monospace;
   font-optical-sizing: auto;
   font-weight: 500;
 }
@@ -69,6 +68,10 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+}
+
+::-webkit-scrollbar {
+  width: .3rem;
 }
 
 @layer base {

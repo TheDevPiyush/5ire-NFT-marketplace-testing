@@ -99,10 +99,10 @@ export default function RootLayout({ children }) {
           enableSystem
           disableTransitionOnChange={true}>
           <WalletProvider>
-            <SidebarProvider >
-              <AppSidebar />
+            <SidebarProvider defaultOpen={false}>
               <SearchProvider>
-                <div className="wrap w-full flex-col">
+                <div className="w-full flex">
+                  <AppSidebar />
                   <Navbar />
                   {children}
                 </div>

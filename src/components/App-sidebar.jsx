@@ -22,49 +22,54 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {useWallet} from "@/hooks/WalletConnectHook";
-import {truncateAddress} from "@/lib/truncateAddress";
+import { useWallet } from "@/hooks/WalletConnectHook";
+import { truncateAddress } from "@/lib/truncateAddress";
 import Link from "next/link";
 
-import {useTheme} from "next-themes";
-import {Button} from "./ui/button";
-import {Moon, Sun} from "lucide-react";
-import {usePathname} from "next/navigation";
+import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
+import { Moon, Sun } from "lucide-react";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function AppSidebar() {
-    const {walletAddress} = useWallet();
-    const {setTheme, theme} = useTheme();
-
+    const { walletAddress } = useWallet();
+    const { setTheme, theme } = useTheme();
+    const [logoUrl, setLogoURl] = useState('https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75')
     const location = usePathname();
 
     const dropdownMenuItems = [
-        {title: "Account", url: `/account/${walletAddress}`, icon: "fa-duotone fa-light fa-user", },
-        {title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
-        {title: "Help & Contact", url: "/help", icon: "fa-duotone fa-thin fa-circle-info", },
-        {title: "Log Out", url: "/logout", icon: "fa-duotone fa-light fa-right-from-bracket", },
+        { title: "Account", url: `/account/${walletAddress}`, icon: "fa-duotone fa-light fa-user", },
+        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
+        { title: "Help & Contact", url: "/help", icon: "fa-duotone fa-thin fa-circle-info", },
+        { title: "Log Out", url: "/logout", icon: "fa-duotone fa-light fa-right-from-bracket", },
     ];
 
     const SidebarMenuiItems = [
-        {title: "Home", url: "/", icon: "fa-duotone fa-thin fa-house", },
-        {title: "Create NFT", url: "/create", icon: "fa-duotone fa-thin fa-paintbrush-fine", },
-        {title: "Marketplace", url: "/marketplace", icon: "fa-duotone fa-light fa-store", },
-        {title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
-        {title: "Sell NFT", url: "/sell", icon: "fa-duotone fa-solid fa-money-bill-transfer", },
+        { title: "Home", url: "/", icon: "fa-duotone fa-thin fa-house", },
+        { title: "Create NFT", url: "/create", icon: "fa-duotone fa-thin fa-paintbrush-fine", },
+        { title: "Marketplace", url: "/marketplace", icon: "fa-duotone fa-light fa-store", },
+        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
+        { title: "Sell NFT", url: "/sell", icon: "fa-duotone fa-solid fa-money-bill-transfer", },
     ];
+
+    useEffect(() => {
+        if (theme === 'light') {
+            setLogoURl('https://upload.wikimedia.org/wikipedia/commons/1/12/5ire-logo2024.png')
+        }
+        else {
+            setLogoURl('https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75')
+        }
+    }, [theme])
     return (
         <Sidebar className='backdrop-filter-blur' collapsible="icon">
             <SidebarContent>
                 <SidebarHeader className='flex justify-center'>
-                    {
-                        theme === "dark" ?
-                            <Image width={85} height={85} alt="5ire Logo" className="rounded-lg dark:opacity-100" src={'https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75'} />
-                            :
-                            <Image width={85} height={85} alt="5ire Logo" className="rounded-lg dark:opacity-100" src={'https://upload.wikimedia.org/wikipedia/commons/1/12/5ire-logo2024.png'} />
-                    }
+                    <img src={logoUrl} alt="Logo" className="w-28" />
                 </SidebarHeader>
                 <SidebarSeparator />
-                <SidebarGroup>
+                <SidebarGroup className='mt-1'>
                     <SidebarGroupContent>
                         <SidebarGroupLabel>Application</SidebarGroupLabel>
                         <SidebarMenu>
@@ -85,7 +90,7 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className='mb-2'>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <div className="wrap">

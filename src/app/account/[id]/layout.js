@@ -10,7 +10,7 @@ export default function AccountLayout({ children, params }) {
   const { walletAddress } = useWallet();
   const pathname = usePathname(); // Get the current path
 
-  const { id } = params; // Extract `id` from dynamic route params
+  const { id } = React.use(params); // Extract `id` from dynamic route params (Wrapped with React.use because params is outdated)
 
   const navItems = [
     { name: "Account", path: `/account/${id}` },
@@ -31,10 +31,10 @@ export default function AccountLayout({ children, params }) {
         <div className="text-3xl flex max-lg:mb-5">
           <p>User</p>
           <div className="flex">
-            <span className="ml-2 text-gray-500">
+            <span className="ml-2 flex justify-center text-gray-500">
               <i class="fa-solid fa-badge-check"></i>
+              <span className="ml-2 text-lg text-gray-500">Get verified</span>
             </span>
-            <span className="ml-2 text-lg text-gray-500">Get verified</span>
           </div>
         </div>
 
@@ -61,9 +61,8 @@ export default function AccountLayout({ children, params }) {
               <li key={item.name}>
                 <Link
                   href={item.path}
-                  className={`text-gray-300 hover:text-white px-3 py-2 ${
-                    pathname === item.path ? "border-b-2 border-white text-white" : ""
-                  }`}
+                  className={`text-gray-300 hover:text-white px-3 py-2 ${pathname === item.path ? "border-b-2 border-white text-white" : ""
+                    }`}
                 >
                   {item.name}
                 </Link>
