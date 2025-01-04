@@ -8,9 +8,10 @@ export default function page() {
   const { searchQuery } = useContext(SearchContext);
 
 
-  // Fetch NFT here from Network and send to Component.
-  // Random Dummy NFT Data :
+  // ToDo : Fetch NFT here from Network and send to Component.
   // -------------------------
+  
+  // Random Dummy NFT and Table Data :
 
   const SampleNFTs = [
     {
