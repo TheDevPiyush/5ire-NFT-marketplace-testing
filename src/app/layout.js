@@ -3,9 +3,10 @@ import "./globals.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/App-sidebar"
 import { ThemeProvider } from "@/components/Theme-provider";
-import { WalletProvider } from "@/hooks/WalletConnectHook";
+import { WalletProvider } from "@/hooks/useWallet";
 import Navbar from "@/components/Navbar";
 import { SearchProvider } from "@/hooks/SearchContextHook";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -104,6 +105,7 @@ export default function RootLayout({ children }) {
                 <div className="w-full flex">
                   <AppSidebar />
                   <Navbar />
+                  <Toaster />
                   {children}
                 </div>
               </SearchProvider>

@@ -1,5 +1,5 @@
 "use client";
-import { useWallet } from "@/hooks/WalletConnectHook";
+import { useWallet } from "@/hooks/useWallet";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
