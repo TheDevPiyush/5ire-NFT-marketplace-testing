@@ -1,6 +1,6 @@
 # 5ire NFT Marketplace
 
-A Next.js-based NFT Marketplace project, leveraging **shadcn-ui**. This guide will help you get started quickly.
+A Next.js-based NFT Marketplace project, leveraging (**shadcn-ui**)['https://ui.shadcn.com/docs/installation/next']. This guide will help you get started quickly.
 
 ## Getting Started
 
@@ -13,10 +13,13 @@ A Next.js-based NFT Marketplace project, leveraging **shadcn-ui**. This guide wi
    cd marketplace-app
    ```
 3. **Install the required dependencies using `npm i`**
+
    ```
    npm i
    ```
+
    **Although the project is already equipped with compatible dependencies, if there are any version conflicts while installation, Kindly use `--force`**
+
    ```
    npm i --force
    ```
