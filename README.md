@@ -16,11 +16,12 @@ A Next.js-based NFT Marketplace project, leveraging **shadcn-ui**. This guide wi
    ```
    npm i
    ```
-4. **Although the project is already equipped with compatible dependencies, if there are any version conflicts while installation, Kindly use `--force`**
+   **Although the project is already equipped with compatible dependencies, if there are any version conflicts while installation, Kindly use `--force`**
    ```
    npm i --force
    ```
-5. **Run the App on the developement server:**
+
+4. **Run the App on the developement server:**
    ```
    npm run dev
    ```
