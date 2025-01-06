@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronsUpDown, Moon, Sun } from "lucide-react";
 import Link from 'next/link';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 const Navbar = () => {
 
@@ -182,7 +183,7 @@ const Navbar = () => {
 
                 {/* Search Button with Dialog */}
                 <Dialog>
-                    <DialogTrigger ref={dialogTriggerRef} className='w-[40%] lg:w-[40%] sm:w-[20%] rounded-sm flex items-center justify-center gap-2 py-2 text-muted-foreground bg-accent'>
+                    <DialogTrigger ref={dialogTriggerRef} className='w-[30%] lg:w-[30%] sm:w-[20%] rounded-sm flex items-center justify-center gap-2 py-2 text-muted-foreground bg-accent'>
                         <i class="fa fa-search text-sm" aria-hidden="true"></i><span className='lg:text-base md:text-base sm:text-sm'> Search NFTs </span>
                     </DialogTrigger>
                     <DialogContent>
@@ -204,108 +205,15 @@ const Navbar = () => {
                     </DialogContent>
                 </Dialog>
 
-
                 {/* ------------------------------------------------ */}
-                {/* LOG IN USER WITH THEIR 5IRE WALLET OR METAMASK */}
+                {/* LOG IN USER WITH RAINBOW CONNECT BUTTON*/}
+                <div className=''>
+                    <ConnectButton accountStatus={{
+                        smallScreen: 'avatar',
+                        largeScreen: 'full',
+                    }} chainStatus="name" showBalance={false} />
+                </div>
 
-                {!walletAddress
-                    ?
-                    // WALLET CONNECT BUTTON 
-                    // ---------------------------------------------------
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button className='sm:text-sm'>Connect Wallet</Button>
-                        </DialogTrigger>
-                        <DialogContent className="sm:max-w-[420px]">
-                            <DialogHeader>
-                                <DialogTitle className='font-bold text-2xl'>Connect Wallet</DialogTitle>
-                                <DialogDescription>Choose your favourite wallet to log in 5ire Marketplace.</DialogDescription>
-                            </DialogHeader>
-                            <div className="py-2 flex flex-col gap-3">
-
-                                {/* 5ire wallet connection */}
-                                <div className="5ire w-full">
-                                    <button onClick={connectWalletWith5ireWallet} className='w-full border-[1px] items-center border-muted rounded-lg p-3 hover:bg-accent flex gap-3  transition-all text-left'>
-                                        <img
-                                            src={"https://s3.coinmarketcap.com/static-gravity/image/fd7a43cc620c4ade96804bb1c36aac6f.png"}
-                                            className='w-8 rounded-full' alt="" />
-                                        <span className='text-lg'>5ire Wallet</span>
-                                    </button>
-                                </div>
-
-
-                                {/* MetaMask wallet connection */}
-                                <div className="metamask w-full">
-                                    <button onClick={connectWalletWithMetaMask} className='w-full border-[2px] items-center border-muted rounded-lg p-3 hover:bg-accent flex gap-3  transition-all text-left'>
-                                        <img src={'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/2048px-MetaMask_Fox.svg.png'} className='w-8' alt="" />
-                                        <span className='text-lg'>MetaMask</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-
-                    :
-                    // ACCOUNT BUTTON HERE
-                    // -----------------------------------------------------
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <div className="wrap">
-                                <SidebarMenuButton className="flex bg-accent items-center justify-between py-5">
-                                    <span className="flex sm:text-sm items-center space-x-2">
-                                        <span>
-                                            {truncateAddress(walletAddress) || "Not connected"}
-                                        </span>
-                                    </span>
-                                    <ChevronsUpDown />
-                                </SidebarMenuButton>
-                            </div>
-                        </DropdownMenuTrigger>
-
-                        {/* ACCOUNT BUTTON DROPDOWN */}
-
-                        <DropdownMenuContent className="w-50">
-                            {dropdownMenuItems.map((item, index) => (
-                                <DropdownMenuItem className={` ${location === item.url ? "bg-accent" : ''}`} key={index}>
-                                    <Link
-                                        href={item.url}
-                                        className={`flex gap-2 p-[2px] items-center justify-start w-full`} >
-                                        <i className={item.icon}></i>
-                                        <span>{item.title}</span>
-                                    </Link>
-                                </DropdownMenuItem>
-                            ))}
-                            <DropdownMenuItem
-                                onClick={() => { updateWalletAddress(null); updateSigner(null); }}
-                                className={`flex gap-2 px-3 items-center justify-start w-full text-red-500 font-bold`}>
-                                <i className="fa-sharp fa-solid fa-right-from-bracket" /> <span>Log Out</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-
-
-                            {/* APP THEME SELECTOR */}
-                            <div className="theme-wrap flex justify-between">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="outline" size="icon">
-                                            <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                            <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                            <span className="sr-only">Toggle theme</span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-50" align="end">
-                                        <DropdownMenuItem onClick={() => setTheme("light")}>
-                                            Light
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                            Dark
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                }
             </nav>
         </div>
     );
