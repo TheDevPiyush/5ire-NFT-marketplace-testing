@@ -3,10 +3,19 @@
 "use client";
 
 import React, { useState } from "react";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
+import { CardWithForm } from "./Card";
 
 export default function page() {
-    const [files, setFiles] = useState<File[]>([]);
-    const [urlList, setUrlList] = useState<string[]>([]);
+    const [files, setFiles] = useState([]);
+    const [urlList, setUrlList] = useState([]);
     const [uploading, setUploading] = useState(false);
     const [collectionName, setCollectionName] = useState("");
 
@@ -37,14 +46,24 @@ export default function page() {
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e) => {
         if (e.target?.files) {
             setFiles(Array.from(e.target.files));
         }
     };
 
     return (
-        <div className="w-full bg-red-400">
+
+
+        // ----------------------------------------------------------------
+        // TO DO: COMPLETE UI OF THIS PAGE
+
+        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+        // COMPLETED : UPLOAD TO A COLLECTION IS NOW SET UP USING PINATA
+        // ----------------------------------------------------------------
+
+        <div className="w-full h-full bg-red-400">
             <input
                 type="text"
                 className="bg-accent"
@@ -61,6 +80,9 @@ export default function page() {
                     <li key={index}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>
                 ))}
             </ul>
+
+            <CardWithForm />
+
         </div>
     );
 }

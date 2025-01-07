@@ -34,7 +34,7 @@ export default function Providers({ children }) {
                                     <AppSidebar />
                                     <Navbar />
                                     <Toaster />
-                                    <span className='my-16 w-full'>
+                                    <span className='mt-16 w-full'>
                                         {children}
                                     </span>
                                 </div>
