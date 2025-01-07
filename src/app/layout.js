@@ -78,7 +78,7 @@ export default function RootLayout({ children }) {
           href="https://site-assets.fontawesome.com/releases/v6.7.2/css/duotone-light.css"
         />
       </head>
-      <body>
+      <body className="w-full">
         <Providers children={children} />
       </body>
     </html>

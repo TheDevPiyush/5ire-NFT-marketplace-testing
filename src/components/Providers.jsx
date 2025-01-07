@@ -1,8 +1,7 @@
 "use client"
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { ThemeProvider } from './Theme-provider'
 import { WagmiProvider } from 'wagmi'
-import { WalletProvider } from '@/hooks/useWallet'
 import { SidebarProvider } from './ui/sidebar'
 import { SearchProvider } from '@/hooks/SearchContextHook'
 import { AppSidebar } from './App-sidebar'
@@ -23,27 +22,27 @@ export default function Providers({ children }) {
             enableSystem
             disableTransitionOnChange={true}>
             <WagmiProvider config={config}>
-                <WalletProvider>
-                    <QueryClientProvider client={client}>
+                <QueryClientProvider client={client}>
 
-                        <RainbowKitProvider coolMode modalSize="compact" showRecentTransactions={true} theme={{
-                            lightMode: lightTheme(),
-                            darkMode: darkTheme({ overlayBlur: 'small', }),
-                        }}>
-                            <SidebarProvider defaultOpen={false}>
-                                <SearchProvider>
-                                    <div className="w-full flex">
-                                        <AppSidebar />
-                                        <Navbar />
-                                        <Toaster />
+                    <RainbowKitProvider coolMode modalSize="compact" showRecentTransactions={true} theme={{
+                        lightMode: lightTheme(),
+                        darkMode: darkTheme({ overlayBlur: 'small', }),
+                    }}>
+                        <SidebarProvider>
+                            <SearchProvider>
+                                <div className="w-full flex">
+                                    <AppSidebar />
+                                    <Navbar />
+                                    <Toaster />
+                                    <span className='my-16 w-full'>
                                         {children}
-                                    </div>
-                                </SearchProvider>
-                            </SidebarProvider>
-                        </RainbowKitProvider>
+                                    </span>
+                                </div>
+                            </SearchProvider>
+                        </SidebarProvider>
+                    </RainbowKitProvider>
 
-                    </QueryClientProvider>
-                </WalletProvider>
+                </QueryClientProvider>
             </WagmiProvider>
         </ThemeProvider>
     )

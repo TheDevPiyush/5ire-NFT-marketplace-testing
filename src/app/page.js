@@ -7,16 +7,16 @@ import React, { useContext } from 'react'
 export default function page() {
   const { searchQuery } = useContext(SearchContext);
 
-
-  // ToDo : Fetch NFT here from Network and send to Component.
-  // -------------------------
-  
-  // Random Dummy NFT and Table Data :
-
   const SampleNFTs = [
     {
       name: "Shimmering Owl #312",
       img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeiamqpt7cu63n7bahj7h2nx6m77vmwo4r5onnrmqshp3qpwu32m2yi.ipfs.dweb.link%2F",
+      user: "OwlEnthusiast",
+      Price: "0.014 5ire"
+    },
+    {
+      name: "Pinata First Upload",
+      img: "https://aquamarine-decent-panther-758.mypinata.cloud/ipfs/bafybeidhwlfcwpinhwcav3wr7wq22xigs5r2k6h23ng6oxtniolbxgawge?pinataGatewayToken=jAks4PshXk5bknw5rGhPdrSei7Elu4MyH5kTvK6H3AAnZ2SrS_cAEG0p-coH00z7",
       user: "OwlEnthusiast",
       Price: "0.014 5ire"
     },
@@ -261,7 +261,7 @@ export default function page() {
 
   return (
     <>
-      <div className='w-full  mt-14  h-full'>
+      <div className='w-full h-full'>
 
         <div className='m-5 py-3 border-[1px] border-muted rounded-lg'>
           <h1 className='m-7 font-bold text-3xl'>

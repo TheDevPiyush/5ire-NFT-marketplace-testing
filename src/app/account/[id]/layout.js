@@ -1,21 +1,19 @@
 "use client";
-import { useWallet } from "@/hooks/useWallet";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { Fragment } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
+import { useAccount } from "wagmi";
 
 export default function AccountLayout({ children, params }) {
-  const { walletAddress } = useWallet();
   const pathname = usePathname(); // Get the current path
-
-  const { id } = React.use(params); // Extract `id` from dynamic route params (Wrapped with React.use because params is outdated)
+  const { address } = useAccount();
 
   const navItems = [
-    { name: "Account", path: `/account/${id}` },
-    { name: "Owned", path: `/account/${id}/owned` },
-    { name: "Created", path: `/account/${id}/created` },
+    { name: "Account", path: `/account/${address}` },
+    { name: "Owned", path: `/account/${address}/owned` },
+    { name: "Created", path: `/account/${address}/created` },
   ];
 
   return (
@@ -49,7 +47,7 @@ export default function AccountLayout({ children, params }) {
           </CardContent>
           <CardContent className="flex justify-between">
             <p className="text-gray-500">Address</p>
-            <p> {truncateAddress(walletAddress)}</p>
+            <p> {truncateAddress(address)}</p>
           </CardContent>
         </Card>
       </div>

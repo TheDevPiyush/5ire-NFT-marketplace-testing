@@ -2,6 +2,6 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div>My Nfts</div>
+    <div className='bg-blue-400 w-full h-full'>My Nfts</div>
   )
 }

@@ -31,7 +31,7 @@ export default function LatestDrop({ NFTs }) {
 
                                                         {/* TO DO : REDIRECT TO NFT CREATER PAGE ON CLICK/}
                                                         {/* <Link></Link> */}
-                                                        
+
                                                         <div className='w-fit text-[1rem] overflow-hidden'>
                                                             {item.Price}
                                                         </div>

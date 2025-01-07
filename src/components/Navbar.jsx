@@ -1,41 +1,26 @@
 "use client"
 
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Command, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator } from "@/components/ui/command";
-import { SidebarMenuButton, SidebarTrigger } from './ui/sidebar';
+import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { SidebarTrigger } from './ui/sidebar';
 import { SearchContext } from '@/hooks/SearchContextHook';
-import { useWallet } from '@/hooks/useWallet';
 import { BrowserProvider } from 'ethers';
-import { truncateAddress } from '@/lib/truncateAddress';
 import { useTheme } from 'next-themes';
 
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { useToast } from '@/hooks/use-toast';
-
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronsUpDown, Moon, Sun } from "lucide-react";
-import Link from 'next/link';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from 'wagmi';
 
 const Navbar = () => {
 
     const { setSearchQuery } = useContext(SearchContext);
-    const { walletAddress, updateWalletAddress, signer, updateSigner } = useWallet();
+    const { account } = useAccount();
     const dialogTriggerRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const ExampleSearchSuggestions = [
@@ -50,7 +35,7 @@ const Navbar = () => {
     const [logoUrl, setLogoURl] = useState('https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75')
 
     const dropdownMenuItems = [
-        { title: "Profile", url: `/account/${walletAddress}`, icon: "fa-duotone fa-light fa-user", },
+        { title: "Profile", url: `/account/${account}`, icon: "fa-duotone fa-light fa-user", },
         { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
     ];
     // THIS FUNCTIONS CHECKS METAMASK INSTALLATION AND LOGS IN THE USER WITH THEIR ACCOUNT.

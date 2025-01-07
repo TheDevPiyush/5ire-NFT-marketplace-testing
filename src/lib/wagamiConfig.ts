@@ -11,7 +11,7 @@ const _5irechainTestnetConfig = {
         decimals: 18,
     },
     rpcUrls: {
-        default: 'https://rpc.testnet.5ire.network',
+        default: { http: ['https://rpc.testnet.5ire.network'] },
     },
     blockExplorers: {
         default: { name: '5irechain Explorer', url: 'https://testnet.5irescan.io' },
@@ -28,7 +28,7 @@ const _5irechainMainNetConfig = {
         decimals: 18,
     },
     rpcUrls: {
-        default: 'https://rpc.5ire.network',
+        default: { http: ['https://rpc.5ire.network'] },
     },
     blockExplorers: {
         default: { name: '5irechain Explorer', url: 'https://5irescan.io' },
@@ -39,7 +39,7 @@ const _5irechainMainNetConfig = {
 export const config = createConfig({
     chains: [_5irechainTestnetConfig, _5irechainMainNetConfig],
     transports: {
-        [_5irechainTestnetConfig.id]: http(_5irechainTestnetConfig.rpcUrls.default),
-        [_5irechainMainNetConfig.id]: http(_5irechainMainNetConfig.rpcUrls.default),
+        [_5irechainTestnetConfig.id]: http(_5irechainMainNetConfig.rpcUrls.default.http[0]),
+        [_5irechainMainNetConfig.id]: http(_5irechainMainNetConfig.rpcUrls.default.http[0]),
     },
 })

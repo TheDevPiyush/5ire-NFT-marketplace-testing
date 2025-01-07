@@ -1,13 +1,14 @@
 "use client";
-import { useWallet } from "@/hooks/useWallet";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React from "react";
+import { useAccount } from "wagmi";
 
 export default function page() {
+
+  const { account } = useAccount()
+
   return (
     <>
-      <div>Account Page</div>
+      <div>Your Profile : {account}</div>
     </>
   );
 }
