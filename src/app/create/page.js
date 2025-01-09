@@ -12,6 +12,7 @@ export default function createNFTPage() {
   const [collectionName, setCollectionName] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const { address } = useAccount();
+  
   const uploadFiles = async () => {
     try {
       if (!files.length) {
@@ -35,22 +36,21 @@ export default function createNFTPage() {
       alert("Trouble uploading files");
     }
   };
-  // const handleFileChange = (e) => {
-  //   if (e.target?.files) {
-  //     setFiles(Array.from(e.target.files));
-  //   }
-  // };
+
   const calculatePrice = () => {
     if (!price || isNaN(price)) return 0;
     return (price * 0.99).toFixed(2);
   };
+
   const handleFilesSelection = (event) => {
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
+
   const removeFile = () => {
     setFiles(null);
   };
+
   return (
     <div className="min-h-screen w-full bg-gray-900 text-white flex flex-col items-center p-8">
       <div className="w-full max-w-3xl bg-gray-800 rounded-lg shadow-lg p-6">
