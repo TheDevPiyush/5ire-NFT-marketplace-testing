@@ -54,7 +54,7 @@ export default function createNFTPage() {
   };
 
   const removeFile = () => {
-    setFiles(null);
+    setFiles([]);
   };
 
   return (
@@ -84,27 +84,21 @@ export default function createNFTPage() {
           <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
             <p className="text-gray-500 text-sm mb-2">PNG, GIF, WEBP, MP4, or MP3. Max 100mb.</p>
             <input type="file" multiple onChange={handleFilesSelection} className="hidden" id="single-file-input" />
-            {
-              files.length === 0 ?
-                <label
-                  htmlFor="single-file-input"
-                  className="cursor-pointer bg-white hover:bg-slate-200 text-black py-2 px-4 rounded-lg">
-                  Choose File
-                </label>
-                :
-                <div>{files.length} <span>{files.length < 10 ? "file selected" : "files selected"}</span></div>
-            }
-            {selectedFile && (
-              <div className="mt-4 flex items-center gap-2">
-                <p className="text-green-400">{selectedFile.name}</p>
+            <div className="flex gap-2 items-center justify-center">
+              <label
+                htmlFor="single-file-input"
+                className="cursor-pointer bg-white hover:bg-slate-200 text-black py-2 px-4 rounded-lg">
+                <span>{files.length === 0 ? "Choose File" : `${files.length} file(s) selected`}</span>
+              </label>
+              {files.length > 0 && (
                 <button
                   onClick={removeFile}
                   className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-sm"
                 >
                   X
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
         <div className="mb-6">
