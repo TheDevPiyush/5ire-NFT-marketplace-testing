@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
 import { useAccount } from "wagmi";
+import { useToast } from "@/hooks/use-toast";
 export default function createNFTPage() {
   const [files, setFiles] = useState([]);
   const [urlList, setUrlList] = useState([]);
@@ -12,10 +13,14 @@ export default function createNFTPage() {
   const [selectedFile, setSelectedFile] = useState(null);
   const { address } = useAccount();
 
+  const { toast } = useToast();
+
   const uploadFiles = async () => {
     try {
-      if (!files.length) {
-        alert("No files selected");
+      if (!files.length | !collectionName) {
+        toast({
+          description: 'No file or collection name provided📂'
+        })
         return;
       }
       setUploading(true);
@@ -32,7 +37,9 @@ export default function createNFTPage() {
     } catch (e) {
       console.error(e);
       setUploading(false);
-      alert("Trouble uploading files");
+      toast({
+        description: 'There was some internal server issue 🛑'
+      })
     }
   };
 
