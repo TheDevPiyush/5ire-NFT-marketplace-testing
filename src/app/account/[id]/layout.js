@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { Fragment } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
 import { useAccount } from "wagmi";
 
@@ -59,8 +59,9 @@ export default function AccountLayout({ children, params }) {
               <li key={item.name}>
                 <Link
                   href={item.path}
-                  className={`text-gray-300 hover:text-white px-3 py-2 ${pathname === item.path ? "border-b-2 border-white text-white" : ""
-                    }`}
+                  className={`text-gray-300 hover:text-white px-3 py-2 ${
+                    pathname === item.path ? "border-b-2 border-white text-white" : ""
+                  }`}
                 >
                   {item.name}
                 </Link>
