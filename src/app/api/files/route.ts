@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
         const createCollection = await pinata.groups.create({ name: collectionName });
         const groupId = createCollection.id;
-
+        
         const ipfsHashes = await Promise.all(
             files.map(async (file) => {
                 const uploadData = await pinata.upload.file(file);

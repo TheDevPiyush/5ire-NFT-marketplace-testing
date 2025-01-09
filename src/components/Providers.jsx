@@ -26,17 +26,18 @@ export default function Providers({ children }) {
 
                     <RainbowKitProvider coolMode modalSize="compact" showRecentTransactions={true} theme={{
                         lightMode: lightTheme(),
-                        darkMode: darkTheme({ overlayBlur: 'small', }),
+                        darkMode: darkTheme({ overlayBlur: 'small' }),
                     }}>
-                        <SidebarProvider>
+                        <SidebarProvider defaultOpen={false}>
                             <SearchProvider>
-                                <div className="w-full flex">
+                                <div className="w-full flex overflow-hidden">
+                                    <Toaster />
+
                                     <AppSidebar />
                                     <Navbar />
-                                    <Toaster />
-                                    <span className='mt-16 w-full'>
+                                    <div className='w-full mt-16 px-3'>
                                         {children}
-                                    </span>
+                                    </div>
                                 </div>
                             </SearchProvider>
                         </SidebarProvider>

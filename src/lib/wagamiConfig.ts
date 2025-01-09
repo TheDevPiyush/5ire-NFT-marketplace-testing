@@ -1,12 +1,13 @@
 import { http, createConfig } from 'wagmi'
 
+// 5ire Testnet Config
 
-const _5irechainTestnetConfig = {
+const _5ireTestnetConfig = {
     id: 997,
-    name: '5ire Testnet',
-    network: '5irechain',
+    name: 'T5IRE',
+    network: '5ireChain Thunder Testnet',
     nativeCurrency: {
-        name: 'T5ire',
+        name: 'T5IRE',
         symbol: 'T5IRE',
         decimals: 18,
     },
@@ -16,14 +17,17 @@ const _5irechainTestnetConfig = {
     blockExplorers: {
         default: { name: '5irechain Explorer', url: 'https://testnet.5irescan.io' },
     },
-    testnet: false,
+    testnet: true,
 }
-const _5irechainMainNetConfig = {
+
+// 5ire Mainnet Config
+
+const _5ireMainnetConfig = {
     id: 995,
     name: '5ireChain',
-    network: '5irechain',
+    network: '5ireChain Mainnet',
     nativeCurrency: {
-        name: '5ire',
+        name: '5IRE',
         symbol: '5IRE',
         decimals: 18,
     },
@@ -36,10 +40,12 @@ const _5irechainMainNetConfig = {
     testnet: false,
 }
 
+// Initialiase the Configs into Wagami
+
 export const config = createConfig({
-    chains: [_5irechainTestnetConfig, _5irechainMainNetConfig],
+    chains: [_5ireTestnetConfig, _5ireMainnetConfig],
     transports: {
-        [_5irechainTestnetConfig.id]: http(_5irechainMainNetConfig.rpcUrls.default.http[0]),
-        [_5irechainMainNetConfig.id]: http(_5irechainMainNetConfig.rpcUrls.default.http[0]),
+        [_5ireTestnetConfig.id]: http(_5ireTestnetConfig.rpcUrls.default.http[0]),
+        [_5ireMainnetConfig.id]: http(_5ireMainnetConfig.rpcUrls.default.http[0]),
     },
 })

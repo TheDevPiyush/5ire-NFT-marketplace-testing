@@ -3,7 +3,6 @@
 import {
     Sidebar,
     SidebarContent,
-    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
     SidebarGroupLabel,
@@ -44,11 +43,11 @@ export function AppSidebar() {
     return (
         <Sidebar className='backdrop-filter-blur' collapsible="icon">
             <SidebarContent>
-                <SidebarHeader className='flex justify-center'>
+                {/* <SidebarHeader className='flex justify-center'>
                     <img src={logoUrl} alt="Logo" className="w-28" />
-                </SidebarHeader>
+                </SidebarHeader> */}
                 <SidebarSeparator />
-                <SidebarGroup className='mt-1'>
+                <SidebarGroup className='mt-8'>
                     <SidebarGroupContent>
                         <SidebarGroupLabel>Application</SidebarGroupLabel>
                         <SidebarMenu>

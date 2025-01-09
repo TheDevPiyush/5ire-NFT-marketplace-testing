@@ -15,12 +15,12 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from '@/hooks/use-toast';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { useAccount } from 'wagmi';
+import { useAccount, useAccountEffect } from 'wagmi';
 
 const Navbar = () => {
 
     const { setSearchQuery } = useContext(SearchContext);
-    const { account } = useAccount();
+    const { account, chain } = useAccount();
     const dialogTriggerRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const ExampleSearchSuggestions = [
@@ -38,114 +38,21 @@ const Navbar = () => {
         { title: "Profile", url: `/account/${account}`, icon: "fa-duotone fa-light fa-user", },
         { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
     ];
-    // THIS FUNCTIONS CHECKS METAMASK INSTALLATION AND LOGS IN THE USER WITH THEIR ACCOUNT.
 
-    const connectWalletWithMetaMask = async () => {
-        if (typeof window.ethereum !== "undefined") {
-            try {
-                setLoading(true);
-                const provider = new BrowserProvider(window.ethereum);
-                await provider.send("eth_requestAccounts", []);
-                const signer = await provider.getSigner();
-                const address = await signer.getAddress();
-                updateSigner(signer);
-                updateWalletAddress(address);
-                setLoading(false);
-                console.log('Signer global : ', signer);
-            } catch (err) {
-                setLoading(false);
-                toast({
-                    description: "Couldn't Connect to wallet ☹️ Please try again.",
-                })
-            }
-        } else {
-            setLoading(false);
+    useAccountEffect({
+
+        onConnect(data) {
             toast({
-                title: 'MetaMask Not Installed 🛑',
-                description: 'Please install metamask wallet to login.',
+                description: `${data.chain.name} is connected! ✅`
+            })
+        },
+
+        onDisconnect() {
+            toast({
+                description: `Wallet Disconnected! 🛑`
             })
         }
-    };
-
-    // THIS FUNCTIONS CHECKS 5ire WALLET INSTALLATION AND LOGS IN THE USER WITH THEIR ACCOUNT.
-
-    const connectWalletWith5ireWallet = async () => {
-        if (typeof window.fire !== "undefined") {
-            try {
-                setLoading(true);
-                const provider = new BrowserProvider(window.fire);
-                await provider.send("eth_requestAccounts", []);
-                const signer = await provider.getSigner();
-                const address = await signer.getAddress();
-                updateSigner(signer);
-                updateWalletAddress(address);
-                setLoading(false);
-                console.log('Signer global : ', signer);
-            } catch (err) {
-                setLoading(false);
-                toast({
-                    description: "Couldn't Connect to wallet ☹️ Please try again.",
-                })
-            }
-        } else {
-            setLoading(false);
-            toast({
-                title: '5ire Wallet Not Installed 🛑',
-                description: 'Please install 5ire Wallet to login.',
-            })
-        }
-    }
-
-    useEffect(() => {
-        if (typeof window.ethereum !== "undefined") {
-            const handleAccountsChanged = (accounts) => {
-                setLoading(true);
-                if (accounts.length > 0) {
-                    connectWalletWithMetaMask();
-                    toast({ description: "MetaMask Connected 😀✅", });
-                }
-                else {
-                    toast({ description: "MetaMask Disconnected 😀🛑", });
-                    updateSigner(null);
-                    updateWalletAddress(null);
-                }
-            };
-            setLoading(false);
-            window.ethereum.on("accountsChanged", handleAccountsChanged);
-            return () => {
-                window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
-            };
-        };
-    }, [])
-
-    useEffect(() => {
-        if (typeof window.fire !== "undefined") {
-            const handleAccountsChanged = (accounts) => {
-                setLoading(true);
-                if (accounts.length > 0) {
-                    connectWalletWith5ireWallet();
-                    toast({ description: "5ire Wallet Connected 😀✅", })
-                }
-                else {
-                    toast({ description: "5ire Wallet Disconnected 😀🛑", })
-                    updateSigner(null);
-                    updateWalletAddress(null);
-                }
-            };
-            setLoading(false);
-            window.fire.on("accountChanged", handleAccountsChanged);
-            window.fire.on("connect", () => { toast({ description: "5ire Wallet Connected 😀✅", }) })
-            window.fire.on("disconnect", () => {
-                toast({ description: "5ire Wallet Disconnected 😀🛑" });
-                updateSigner(null);
-                updateWalletAddress(null);
-            })
-
-            return () => {
-                window.fire.removeListener("accountChanged", handleAccountsChanged);
-            };
-        };
-    }, [])
+    })
 
     useEffect(() => {
         if (theme === 'light') {
@@ -169,7 +76,7 @@ const Navbar = () => {
                 {/* Search Button with Dialog */}
                 <Dialog>
                     <DialogTrigger ref={dialogTriggerRef} className='w-[30%] lg:w-[30%] sm:w-[20%] rounded-sm flex items-center justify-center gap-2 py-2 text-muted-foreground bg-accent'>
-                        <i class="fa fa-search text-sm" aria-hidden="true"></i><span className='lg:text-base md:text-base sm:text-sm'> Search NFTs </span>
+                        <i class="fa fa-search text-sm" aria-hidden="true"></i><span className='lg:text-base md:text-base sm:text-sm'>Search</span>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogTitle>Search NFT</DialogTitle>
@@ -195,8 +102,8 @@ const Navbar = () => {
                 <div className=''>
                     <ConnectButton accountStatus={{
                         smallScreen: 'avatar',
-                        largeScreen: 'full',
-                    }} chainStatus="name" showBalance={false} />
+                        largeScreen: 'avatar',
+                    }} chainStatus="icon" showBalance={false} />
                 </div>
 
             </nav>

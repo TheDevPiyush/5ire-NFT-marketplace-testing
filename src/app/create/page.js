@@ -3,17 +3,13 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { CardWithForm } from "./Card";
+import { CollectionCard } from "./Card";
+import { useToast } from "@/hooks/use-toast";
 
 export default function page() {
+
+    const { toast } = useToast();
+
     const [files, setFiles] = useState([]);
     const [urlList, setUrlList] = useState([]);
     const [uploading, setUploading] = useState(false);
@@ -22,7 +18,9 @@ export default function page() {
     const uploadFiles = async () => {
         try {
             if (!files.length) {
-                alert("No files selected");
+                toast({
+                    description: 'No files selected 📂'
+                })
                 return;
             }
 
@@ -42,7 +40,9 @@ export default function page() {
         } catch (e) {
             console.error(e);
             setUploading(false);
-            alert("Trouble uploading files");
+            toast({
+                description: 'There was some problem uploading your Collection ☹️'
+            })
         }
     };
 
@@ -63,25 +63,14 @@ export default function page() {
         // COMPLETED : UPLOAD TO A COLLECTION IS NOW SET UP USING PINATA
         // ----------------------------------------------------------------
 
-        <div className="w-full h-full bg-red-400">
-            <input
-                type="text"
-                className="bg-accent"
-                name="collectionName"
-                placeholder="Collection Name"
-                onChange={(e) => setCollectionName(e.target.value)}
+        <div className="w-full h-full">
+            <CollectionCard
+                collectionName={collectionName}
+                setCollectionName={setCollectionName}
+                file={files}
+                setFile={setFiles}
+                onSubmit={uploadFiles}
             />
-            <input type="file" multiple onChange={handleFileChange} />
-            <button type="button" disabled={uploading} onClick={uploadFiles}>
-                {uploading ? "Uploading..." : "Upload"}
-            </button>
-            <ul>
-                {urlList.map((url, index) => (
-                    <li key={index}><a href={url} target="_blank" rel="noopener noreferrer">{url}</a></li>
-                ))}
-            </ul>
-
-            <CardWithForm />
 
         </div>
     );

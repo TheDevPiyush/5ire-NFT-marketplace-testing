@@ -263,27 +263,28 @@ export default function page() {
     <>
       <div className='w-full h-full'>
 
-        <div className='m-5 py-3 border-[1px] border-muted rounded-lg'>
-          <h1 className='m-7 font-bold text-3xl'>
-            Latest Drops
-          </h1>
+        <h1 className='font-bold text-3xl flex justify-start'>
+          Latest Drops
+        </h1>
+        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
           <LatestDrop NFTs={SampleNFTs} />
         </div>
 
-        <div className='m-7 p-1 border-[1px] border-muted rounded-lg'>
-          <h1 className='m-3 my-3  font-bold  text-3xl'>
-            Trending Collections
-          </h1>
+        <h1 className='my-3  font-bold  text-3xl'>
+          Trending Collections
+        </h1>
+        <div className='p-1 border-[1px] border-muted rounded-lg'>
           <TableData data={sampleTableData} />
         </div>
 
-        <div className='m-5 py-3 border-[1px] border-muted rounded-lg'>
-          <h1 className='m-7 font-bold text-3xl'>
-            More For You
-          </h1>
+        <h1 className='font-bold text-3xl flex justify-start'>
+          Latest Drops
+        </h1>
+        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
           <LatestDrop NFTs={SampleNFTs} />
         </div>
 
+          <LatestDrop NFTs={SampleNFTs} />
 
       </div >
     </>
