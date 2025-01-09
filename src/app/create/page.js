@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CardWithForm } from "./Card";
+import { Card, CardContent } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
 import { useAccount } from "wagmi";
 export default function createNFTPage() {
@@ -12,7 +11,7 @@ export default function createNFTPage() {
   const [collectionName, setCollectionName] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const { address } = useAccount();
-  
+
   const uploadFiles = async () => {
     try {
       if (!files.length) {
