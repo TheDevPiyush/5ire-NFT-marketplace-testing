@@ -1,21 +1,103 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
-import { useAccount } from "wagmi";
+import { useAccount, useWriteContract, useTransactionReceipt } from "wagmi";
 import { useToast } from "@/hooks/use-toast";
+import _abiNFT from '@/utils/FireNFTToken.json'
+import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
+import { parseEther, parseEventLogs } from "viem";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+
 export default function createNFTPage() {
+
+
+  const [NFTAddress, setNFTaddress] = useState("0xBfA802aB26C07F157f0F710c78c13792CbC64121");
+  const NFTabi = _abiNFT.abi;
+  const NFTbyteCode = _abiNFT.bytecode;
+
+  const [MarketplaceAddress, setMarketplaceAddress] = useState('0x6f42F3F1aE13d23B302555C700DD61255B3A6Eb6');
+  const MarketPlaceAbi = _abiMarketPlace.abi;
+  const MarketplaceByteCode = _abiMarketPlace.bytecode;
+
+
+  const [uploadButtonState, setUploadButtonState] = useState({ state: "Mint NFT", disabled: false })
   const [files, setFiles] = useState([]);
   const [urlList, setUrlList] = useState([]);
-  const [uploading, setUploading] = useState(false);
   const [price, setPrice] = useState(0);
   const [collectionName, setCollectionName] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const { address } = useAccount();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [royalties, setRoyalties] = useState(0);
 
+
+  const [mintEvent, setMintEvent] = useState({ address: "", tokenId: "", tokenURI: "" });
+  const [itemAddedEvent, setItemAddedEvent] = useState({
+    itemId: '',
+    sender: "",
+    nftContractAdd: "",
+    tokenId: "",
+    nftURI: "",
+    price: "",
+    isListed: "",
+    timeStamp: ""
+  })
+  const { address, isConnected } = useAccount();
   const { toast } = useToast();
 
+  // ------------- UPLOAD TO NFT MINTING CONTRACT AND CHECK TRANSACTION SUCCESS \----------------------------------------
+  const {
+    writeContractAsync: uploadToCreateNFTcontract,
+    data: CreateNFTData,
+  } = useWriteContract();
+
+  const {
+    data: txCreateNFT,
+    isSuccess: txCreateNFTsuccess
+  } = useTransactionReceipt({ hash: CreateNFTData })
+
+  // ------------- APPROVE THE NFT INTO THE MARKERTPLACE CONTRACT AND CHECK TRANSACTION SUCCESS --------------------------------
+  const {
+    writeContractAsync: approveNFT,
+    data: approveNFTData,
+  } = useWriteContract();
+
+  const {
+    data: txApproveNFt,
+    isSuccess: txApproveNFTSuccess
+  } = useTransactionReceipt({ hash: approveNFTData })
+
+
+
+  // --------------- ADD MINTED NFT MARKETPLACE CONTRACT AND CHECK TRANSACTION SUCCESS ----------------------------------------
+  const {
+    writeContractAsync: AddNFTtoMarketPlaceContract,
+    data: AddToMarketPlaceContractData
+  } = useWriteContract();
+
+  const {
+    data: txAddToMaketplace,
+    isSuccess: txAddToMaketplaceSuccess
+  } = useTransactionReceipt({ hash: AddToMarketPlaceContractData })
+
+
+  // ------------- THIS HOOK WILL LIST THE NFT WITH PRICE AND CHECK TRANSATION SUCCESS ON MARKEPLACE -------------------------
+  const {
+    writeContractAsync: ListNFTtoMarketPlaceContract,
+    data: ListToMarketplaceData
+  } = useWriteContract();
+
+  const {
+    data: txListToMaketplace,
+    isSuccess: txListToMaketplaceSuccess,
+    isError: txListToMaketplaceIsError,
+    error: txListToMaketplaceError
+  } = useTransactionReceipt({ hash: ListToMarketplaceData })
+
+
+  // FUNCTION TO UPLOAD THE SELECTED IMAGE TO PINATA IPFS AND GENERATING A METADATA FILE FOR IT
   const uploadFiles = async () => {
+    // THIS FUNCTIONS UPLOADS MULTIPLE FILES TO ONE GROUP TO PINATA IPFS.
     try {
       if (!files.length | !collectionName) {
         toast({
@@ -23,39 +105,179 @@ export default function createNFTPage() {
         })
         return;
       }
-      setUploading(true);
+      setUploadButtonState({ state: "Uploading NFT Image...", disabled: true })
       const data = new FormData();
       files.forEach((file) => data.append("files", file));
       data.set("collection", collectionName);
+      data.set("price", price)
+      data.set("name", name);
+      data.set("description", description);
+      data.set("royalties", royalties);
       const uploadRequest = await fetch("/api/files", {
         method: "POST",
         body: data,
       });
       const ipfsUrls = await uploadRequest.json();
       setUrlList(ipfsUrls);
-      setUploading(false);
+      setUploadButtonState({ state: "Mint NFT", disabled: false })
+      toast({
+        title: `Image Uploaded Successfully ✅`,
+      })
     } catch (e) {
       console.error(e);
-      setUploading(false);
+      setUploadButtonState({ state: "Mint NFT", disabled: false })
+
       toast({
-        description: 'There was some internal server issue 🛑'
+        description: 'Image Could Not Be Uploaded 🛑'
       })
     }
   };
 
+  // FUNCTION TO MINT THE METADATA TO NFT CONTRACT
+  const uploadAndCreateNFT = async () => {
+    setUploadButtonState({ state: "Minting your NFT...", disabled: true })
+
+    await uploadToCreateNFTcontract({
+      abi: NFTabi,
+      address: NFTAddress,
+      functionName: 'createNFTs',
+      args: [[urlList[0]]]
+    });
+  }
+
+  // CALCULATING PRICE BASED ON USER INPUT
   const calculatePrice = () => {
     if (!price || isNaN(price)) return 0;
     return (price * 0.99).toFixed(2);
   };
 
+  // FILE SELECTION BY USER
   const handleFilesSelection = (event) => {
     const selectedFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
   };
 
+  // REMOVING SELETED FILE BY USER
   const removeFile = () => {
     setFiles([]);
   };
+
+  // FOR NOW ONLY ONE IMAGE CAN BE MINTED INTO THE CONTRACT AT A TIME, BATCH MINTING WILL BE DONE LATER.
+  useEffect(() => {
+    if (urlList.length > 0) {
+      uploadAndCreateNFT();
+    }
+  }, [urlList])
+
+  // CHECKING FOR SUCCESSFULL MINTING AND GETTING CREATE NFT EVENTS.
+  useEffect(() => {
+    if (!txCreateNFT || !txCreateNFTsuccess) return;
+    if (!txCreateNFT.logs) return;
+
+    const logs = parseEventLogs({
+      abi: NFTabi,
+      eventName: "NFTCreated",
+      logs: txCreateNFT.logs
+    })
+    toast({
+      title: `NFT Minted Successfully ✅`,
+    })
+    setMintEvent({ address: logs[0].address, tokenId: logs[0].args.tokenId.toString(), tokenURI: logs[0].args.tokenURI })
+  }, [txCreateNFT, txCreateNFTsuccess]);
+
+
+  // CHECKING FOR MINTED NFT SUCCESSFULLY ADDITION TO MARKETPLACE.
+  useEffect(() => {
+    if (!txAddToMaketplace || !txAddToMaketplaceSuccess) return;
+    if (!txAddToMaketplace.logs) return;
+
+    const logs = parseEventLogs({
+      abi: MarketPlaceAbi,
+      eventName: "ItemAdded",
+      logs: txAddToMaketplace.logs
+    })
+    console.log(logs)
+    setItemAddedEvent({
+      itemId: logs[0].args.itemId.toString(),
+      sender: logs[0].args.owner,
+      nftContractAdd: logs[0].args.nftContract,
+      tokenId: logs[0].args.tokenId,
+      nftURI: logs[0].args.nftURI,
+      price: logs[0].args.price,
+      isListed: logs[0].args.isListed,
+      timeStamp: logs[0].args.timestamp
+    }
+    )
+    toast({
+      title: `NFT Added Successfully to Marketplace ✅`,
+    })
+
+    if (price > 0) {
+
+      setUploadButtonState({ state: "Listing NFT to the marketplace....", disabled: true })
+      ListNFTtoMarketPlaceContract({
+        abi: MarketPlaceAbi,
+        address: MarketplaceAddress,
+        functionName: 'listNFTWithNative',
+        args: [logs[0].args.itemId, price],
+        value: parseEther('1')
+      })
+    }
+
+  }, [txAddToMaketplace, txAddToMaketplaceSuccess]);
+
+  useEffect(() => {
+    if (txListToMaketplace && txAddToMaketplaceSuccess) {
+      const logs = parseEventLogs({
+        abi: MarketPlaceAbi,
+        eventName: "ItemListed",
+        logs: txListToMaketplace.logs
+      })
+      console.log(logs)
+      toast({
+        title: `NFT Listed with ${price} 5ire to Marketplace ✅`,
+      })
+      setUploadButtonState({ state: "Approving NFT....", disabled: true })
+
+      approveNFT({
+        abi: NFTabi,
+        address: NFTAddress,
+        functionName: 'approve',
+        args: [MarketplaceAddress, mintEvent.tokenId]
+      })
+    }
+
+    if (txListToMaketplaceIsError) {
+      console.log(txListToMaketplace)
+    }
+  }, [txListToMaketplace, txListToMaketplaceSuccess, txListToMaketplaceIsError, txListToMaketplaceError])
+
+
+  useEffect(() => {
+    if (!txApproveNFt || !txApproveNFTSuccess) return;
+
+    toast({
+      title: 'NFT approved and added to the marketplace. ✅'
+    })
+    setUploadButtonState({ state: "Mint NFT", disabled: false })
+
+
+  }, [txApproveNFt, txApproveNFTSuccess])
+
+  // ADDING THE ```NFT CONTRACT ADDRESS AND TOKEN ID``` TO MARKETPLACE CONTRACT AFTER SUCCESSFULL MINTING
+  useEffect(() => {
+    if (mintEvent.address && mintEvent.tokenId && mintEvent.tokenURI) {
+      setUploadButtonState({ state: "Adding NFt to marketplace...", disabled: true })
+
+      AddNFTtoMarketPlaceContract({
+        abi: MarketPlaceAbi,
+        address: MarketplaceAddress,
+        functionName: 'addNFTtoMarketPlace',
+        args: [mintEvent.address, mintEvent.tokenId]
+      })
+    }
+  }, [mintEvent])
+
 
   return (
     <div className="min-h-screen w-full bg-gray-900 text-white flex flex-col items-center p-8">
@@ -153,6 +375,7 @@ export default function createNFTPage() {
             type="text"
             placeholder="e.g. 'Redeemable Tiger logo with a cup'"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
+            onChange={(e) => { setName(e.target.value) }}
           />
         </div>
         {/* Description Input */}
@@ -165,6 +388,7 @@ export default function createNFTPage() {
             rows={4}
             placeholder="e.g. 'After purchasing, you'll be able to get the real cup'"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
+            onChange={(e) => { setDescription(e.target.value) }}
           ></textarea>
         </div>
         {/* Royalties Input */}
@@ -177,18 +401,22 @@ export default function createNFTPage() {
             type="number"
             placeholder="e.g. 12"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
+            onChange={(e) => { setRoyalties(e.target.value) }}
           />
           <p className="text-gray-500 text-sm mt-2">Suggested: 0%, 10%, 20%, 30%. Maximum is 50%.</p>
         </div>
         {/* Upload Button */}
-        <button
-          type="button"
-          disabled={uploading}
-          onClick={uploadFiles}
-          className="w-full bg-white hover:bg-slate-200 text-black py-3 rounded-lg font-semibold mb-4"
-        >
-          {uploading ? "Uploading..." : "Upload Files"}
-        </button>
+        {isConnected ?
+          <button
+            type="button"
+            disabled={uploadButtonState.disabled}
+            onClick={uploadFiles}
+            className="w-full bg-white hover:bg-slate-200 text-black py-3 rounded-lg font-semibold mb-4 items-center flex justify-center gap-3"
+          >
+            {uploadButtonState.state}{uploadButtonState.disabled && <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-accent border-r-transparent"></span>}
+          </button>
+          : <ConnectButton />
+        }
       </div>
     </div>
   );
