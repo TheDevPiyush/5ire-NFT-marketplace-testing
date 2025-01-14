@@ -2,10 +2,44 @@
 import LatestDrop from '@/components/LatestDrop';
 import TableData from '@/components/TableData';
 import { SearchContext } from '@/hooks/SearchContextHook';
-import React, { useContext } from 'react'
-
+import React, { useContext, useEffect, useState } from 'react'
+import { useAccount, useReadContract } from 'wagmi';
+import _abiNFT from '@/utils/FireNFTToken.json'
+import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
+import LoadingCard from '@/components/LoadingCard'
 export default function page() {
   const { searchQuery } = useContext(SearchContext);
+  const { address, isConnected, } = useAccount()
+
+  const [NFTs, setNFTs] = useState([]);
+
+  const [MarketplaceAddress, setMarketplaceAddress] = useState('0x6f42F3F1aE13d23B302555C700DD61255B3A6Eb6');
+  const MarketPlaceAbi = _abiMarketPlace.abi;
+  const MarketplaceByteCode = _abiMarketPlace.bytecode;
+
+  // THIS HOOK WILL `GET ALL NFTs` BY USER FROM MARKETPLACE CONTRACT
+  const {
+    data: getALLNFTsdata,
+    isLoading: getALLNFTsdataLoading,
+    error: getALLOwnedNFTsdataError,
+    refetch: getAllNFTs,
+    isSuccess: getALLNFTsdataSuccess
+  } = useReadContract({
+    abi: MarketPlaceAbi,
+    address: MarketplaceAddress,
+    functionName: 'getAllNFTs',
+    args: [],
+    enabled: true,
+  });
+
+  useEffect(() => {
+    getAllNFTs()
+  }, [])
+
+  useEffect(() => {
+    if (getALLNFTsdata) setNFTs(getALLNFTsdata);
+  }, [getALLNFTsdataSuccess])
+
 
   const SampleNFTs = [
     {
@@ -262,29 +296,22 @@ export default function page() {
   return (
     <>
       <div className='w-full h-full'>
-
-        <h1 className='font-bold text-3xl flex justify-start'>
-          Latest Drops
-        </h1>
-        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-          <LatestDrop NFTs={SampleNFTs} />
-        </div>
+        {NFTs &&
+          <>
+            <h1 className='font-bold m-2 text-3xl flex justify-start'>
+              Latest Drops on 5ireChain
+            </h1>
+            <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
+              <LatestDrop NFTs={NFTs} />
+            </div>
+          </>}
 
         <h1 className='my-3  font-bold  text-3xl'>
-          Trending Collections
+          Trending Collections (SAMPLE DATA)
         </h1>
         <div className='p-1 border-[1px] border-muted rounded-lg'>
           <TableData data={sampleTableData} />
         </div>
-
-        <h1 className='font-bold text-3xl flex justify-start'>
-          Latest Drops
-        </h1>
-        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-          <LatestDrop NFTs={SampleNFTs} />
-        </div>
-
-          <LatestDrop NFTs={SampleNFTs} />
 
       </div >
     </>

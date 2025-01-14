@@ -48,4 +48,5 @@ export const config = createConfig({
         [_5ireTestnetConfig.id]: http(_5ireTestnetConfig.rpcUrls.default.http[0]),
         [_5ireMainnetConfig.id]: http(_5ireMainnetConfig.rpcUrls.default.http[0]),
     },
+    syncConnectedChain: true
 })
