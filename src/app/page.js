@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { useAccount, useReadContract } from 'wagmi';
 import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
-
+import LoadingCard from '@/components/LoadingCard'
 export default function page() {
   const { searchQuery } = useContext(SearchContext);
   const { address, isConnected, } = useAccount()
@@ -296,7 +296,6 @@ export default function page() {
   return (
     <>
       <div className='w-full h-full'>
-
         {NFTs &&
           <>
             <h1 className='font-bold m-2 text-3xl flex justify-start'>
@@ -307,14 +306,6 @@ export default function page() {
             </div>
           </>}
 
-
-        {/* <h1 className='font-bold text-3xl flex justify-start'>
-          Latest Drops
-        </h1>
-        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-          <LatestDrop NFTs={SampleNFTs} />
-        </div> */}
-
         <h1 className='my-3  font-bold  text-3xl'>
           Trending Collections (SAMPLE DATA)
         </h1>
@@ -322,12 +313,6 @@ export default function page() {
           <TableData data={sampleTableData} />
         </div>
 
-        {/* <h1 className='font-bold text-3xl flex justify-start'>
-          Latest Drops
-        </h1>
-        <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-          <LatestDrop NFTs={SampleNFTs} />
-        </div> */}
       </div >
     </>
   )

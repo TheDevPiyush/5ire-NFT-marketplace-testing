@@ -10,6 +10,8 @@ import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
 import { parseEther, parseEventLogs } from 'viem';
 import { useToast } from '@/hooks/use-toast';
+import { Turtle } from 'lucide-react';
+import LoadingCard from './LoadingCard';
 
 export default function LatestDrop({ NFTs }) {
 
@@ -30,7 +32,10 @@ export default function LatestDrop({ NFTs }) {
     const [MarketplaceAddress, setMarketplaceAddress] = useState('0x6f42F3F1aE13d23B302555C700DD61255B3A6Eb6');
 
     const [buyButtonState, setBuyButtonState] = useState({ state: 'Buy', disabled: false })
-    const { writeContractAsync: buyNFT, data: buyNFTdata } = useWriteContract();
+    const [currentTransactionItemId, setCurrentTransactionItemId] = useState(null);
+
+
+    const { writeContractAsync: buyNFT, data: buyNFTdata, isError: isbuyNftError, error: buyNftError, isSuccess: isBuyNFTSuccess } = useWriteContract();
     const { data: txBuyNFTdata, isSuccess: txBuyNFTisSuccess, isError: txBuyNFTisError } = useTransactionReceipt({ hash: buyNFTdata });
 
 
@@ -38,39 +43,42 @@ export default function LatestDrop({ NFTs }) {
 
         if (!isConnected || isDisconnected) return toast({ title: "Please log in to Buy NFTs 🔑" })
         if (address === item.owner) return toast({ title: "You are already the proud owner ❤️" })
+        setCurrentTransactionItemId(item.itemId);
         setBuyButtonState({ state: 'Transacting...', disabled: true })
-        await buyNFT({
-            abi: MarketPlaceAbi,
-            address: MarketplaceAddress,
-            args: [item.itemId],
-            functionName: "buyWithNative",
-            value: parseEther(item.price.toString())
-        })
+        try {
+
+            await buyNFT({
+                abi: MarketPlaceAbi,
+                address: MarketplaceAddress,
+                args: [item.itemId],
+                functionName: "buyWithNative",
+                value: parseEther(item.price.toString())
+            })
+        } catch {
+            setCurrentTransactionItemId(null);
+        }
     }
 
-    // useEffect(() => {
+    useEffect(() => {
+        if (txBuyNFTisError) {
+            toast({ title: "Transaction failed due to unknown error ☹️🛑" })
+        }
+        if (txBuyNFTisSuccess || isBuyNFTSuccess) {
+            toast({ title: "NFT bought successfully 😀✅" })
+        }
+        setCurrentTransactionItemId(null);
+    }, [txBuyNFTdata, txBuyNFTisSuccess, txBuyNFTisError, isBuyNFTSuccess])
 
-    //     const logs = parseEventLogs({
-    //         abi: MarketPlaceAbi,
-    //         eventName: "buyWithNative",
-    //         logs: txBuyNFTdata.logs
-    //     })
-    //     console.log(logs)
-
-    //     if (txBuyNFTisError) {
-    //         toast({ title: "Transaction failed due to unknown error ☹️🛑" })
-    //     }
-    //     if (txBuyNFTisSuccess) {
-    //         toast({ title: "NFT bought successfully 😀✅" })
-    //     }
-    //     setBuyButtonState({ state: 'Buy NFT', disabled: false })
-
-    // }, [txBuyNFTdata, txBuyNFTisSuccess, txBuyNFTisError])
-
+    useEffect(() => {
+        if (buyNFTdata) return toast({ title: "Transaction Canceled or failed 🛑" })
+        if (buyNftError) return toast({ title: "Transaction Canceled or failed 🛑" })
+        setCurrentTransactionItemId(null);
+    }, [isbuyNftError, buyNftError])
 
     useEffect(() => {
         async function fetchMetadataForNFTs() {
             try {
+                setLoading(true)
                 const metadataPromises = NFTs.map(async (nft) => {
                     const response = await fetch(nft.nftURI);
                     if (!response.ok) {
@@ -84,6 +92,7 @@ export default function LatestDrop({ NFTs }) {
             } catch (err) {
                 console.error('Error fetching NFT metadata:', err);
                 setError(err);
+                setLoading(false)
             } finally {
                 setLoading(false);
             }
@@ -97,14 +106,19 @@ export default function LatestDrop({ NFTs }) {
         }
     }, [NFTs]);
 
+    useEffect(() => {
+        if (nftMetadataList.length > 0) setLoading(false)
+    }, [nftMetadataList])
 
     return (
-        <div className='w-[95%] justify-center flex items-center h-fit select-none flex-wrap'>
-            <Carousel className='w-full'>
-                <CarouselPrevious />
-                <CarouselContent>
-                    {
-                        nftMetadataList.map((item, index) => (
+
+        !loading ?
+
+            <div className='w-[95%] justify-center flex items-center h-fit select-none flex-wrap' >
+                <Carousel className='w-full'>
+                    <CarouselPrevious />
+                    <CarouselContent>
+                        {nftMetadataList.map((item, index) => (
                             <CarouselItem key={index} className="basis-1/2 md:basis-1/5 lg:basis-1/7">
                                 <Card className='cursor-pointer border-2 p-2'>
                                     <div className="flex flex-col rounded-md items-center justify-center">
@@ -140,16 +154,23 @@ export default function LatestDrop({ NFTs }) {
                                                 <Button
                                                     onClick={() => handleBuyNFT(item)}
                                                     className="my-2 text-lg w-full font-bold"
-                                                    disabled={!item.isListed || buyButtonState.disabled}
+                                                    disabled={!item.isListed || currentTransactionItemId === item.itemId}
                                                 >
                                                     {!item.isListed ? (
                                                         "Item not listed yet"
                                                     ) : (
                                                         <>
-                                                            {buyButtonState.state}
-                                                            {buyButtonState.disabled && (
-                                                                <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-accent border-r-transparent"></span>
-                                                            )}
+                                                            {currentTransactionItemId === item.itemId
+                                                                ?
+                                                                <>
+                                                                    <span>Transacting...</span>
+                                                                    <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-accent border-r-transparent"></span>
+                                                                </>
+                                                                :
+                                                                <>
+                                                                    <span>Buy</span>
+                                                                </>
+                                                            }
                                                         </>
                                                     )}
                                                 </Button>
@@ -158,10 +179,12 @@ export default function LatestDrop({ NFTs }) {
                                     </div>
                                 </Card>
                             </CarouselItem>))}
-                </CarouselContent>
-                <CarouselNext />
-            </Carousel>
-        </div>
+                    </CarouselContent>
+                    <CarouselNext />
+                </Carousel>
+            </div >
+            :
+            <LoadingCard />
 
     )
 }
