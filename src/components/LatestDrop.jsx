@@ -130,10 +130,11 @@ export default function LatestDrop({ NFTs }) {
                                                 <div className='Username my-1 w-full flex items-center justify-between text-muted-foreground'>
 
                                                     <div className='w-[50%] text-[1rem] overflow-hidden'>
-                                                        {item.price.toString()} <span>5ire</span>
+                                                        {item.isListed && <>
+                                                            {item.price.toString()} 5ire
+                                                        </>}
                                                     </div>
-
-                                                    <div className='cursor-pointer w-[50%] text-right text-sm font-bold hover:text-blue-500'>
+                                                    <div className='cursor-pointer overflow-hidden text-ellipsis w-[50%] text-right text-sm font-bold hover:text-blue-500'>
                                                         {truncateAddress(item.owner)}
                                                     </div>
                                                 </div>
@@ -146,18 +147,21 @@ export default function LatestDrop({ NFTs }) {
                                                             <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-green-600' /> Listed
                                                         </span>
                                                         :
-                                                        <span className='text-red-400 text-sm items-center font-medium'>
+                                                        <span className='text-red-400 items-center font-medium text-sm'>
                                                             <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-red-400' /> Not Listed
                                                         </span>
                                                     }
                                                 </div>
+                                                <div className='text-[0.8rem] text-muted-foreground'>
+                                                    {new Date(Number(item.timestamp) * 1000).toLocaleString()}
+                                                </div>
                                                 <Button
                                                     onClick={() => handleBuyNFT(item)}
-                                                    className="my-2 text-lg w-full font-bold"
+                                                    className={`my-3 py-5 text-base w-full font-bold ${!item.isListed ? 'bg-accent' : 'bg-primary'}`}
                                                     disabled={!item.isListed || currentTransactionItemId === item.itemId}
                                                 >
                                                     {!item.isListed ? (
-                                                        "Item not listed yet"
+                                                        "Not Listed"
                                                     ) : (
                                                         <>
                                                             {currentTransactionItemId === item.itemId
@@ -168,7 +172,7 @@ export default function LatestDrop({ NFTs }) {
                                                                 </>
                                                                 :
                                                                 <>
-                                                                    <span>Buy</span>
+                                                                    <span className='animate-pulse'>Buy</span>
                                                                 </>
                                                             }
                                                         </>
