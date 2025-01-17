@@ -9,13 +9,14 @@ import { parseEther, parseEventLogs } from 'viem';
 import { useToast } from '@/hooks/use-toast';
 import { Turtle } from 'lucide-react';
 import LoadingCard from './LoadingCard';
+import { useNFTContext } from '@/hooks/useNFTcontext';
 
 export default function LatestDrop({ nftMetadataList, loadingState }) {
 
 
     const { address, isConnected, isDisconnected } = useAccount();
     const { toast } = useToast();
-
+    const { refetch } = useNFTContext();
 
     const MarketPlaceAbi = _abiMarketPlace.abi;
 
@@ -36,38 +37,34 @@ export default function LatestDrop({ nftMetadataList, loadingState }) {
         if (address === item.owner) return toast({ title: "You are already the proud owner ❤️" })
         setCurrentTransactionItemId(item.itemId);
         setBuyButtonState({ state: 'Transacting...', disabled: true })
-        try {
-
-            await buyNFT({
-                abi: MarketPlaceAbi,
-                address: MarketplaceAddress,
-                args: [item.itemId],
-                functionName: "buyWithNative",
-                value: parseEther(item.price.toString())
-            })
-        } catch {
-            setCurrentTransactionItemId(null);
-        }
+        await buyNFT({
+            abi: MarketPlaceAbi,
+            address: MarketplaceAddress,
+            args: [item.itemId],
+            functionName: "buyWithNative",
+            value: parseEther(item.price.toString())
+        })
     }
 
     useEffect(() => {
-        if (buyNftError || txBuyNFTisError || !txBuyNFTdata) {
+        if (buyNftError || isbuyNftError || txBuyNFTisError || !txBuyNFTdata) {
             console.log(buyNFTdata, txBuyNFTdata, txBuyNFTisError)
             toast({ title: "Transaction Failed 🛑" })
+            refetch;
         }
         else if (isBuyNFTSuccess) {
-            console.log(isBuyNFTSuccess)
-            console.log(isbuyNftError)
             toast({ title: "NFT Bought Successfully ✅😀" })
+            refetch;
         }
         setCurrentTransactionItemId(null);
+        setBuyButtonState({ state: 'Buy', disabled: false })
     }, [txBuyNFTdata, txBuyNFTisSuccess, txBuyNFTisError, buyNftError])
 
     return (
 
 
         <div className='w-full p-3 justify-center items-center h-screen overflow-auto select-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6' >
-            {nftMetadataList.map((item, index) => (
+            {!loadingState ? nftMetadataList.map((item, index) => (
                 <Card className='cursor-pointer border-2 p-3'>
                     <div className="flex flex-col rounded-md items-center justify-center">
                         <div className='overflow-hidden rounded-sm  aspect-video bg-red'>
@@ -130,7 +127,10 @@ export default function LatestDrop({ nftMetadataList, loadingState }) {
                         </div>
                     </div>
                 </Card>
-            ))}
+            ))
+                :
+                <LoadingCard />
+            }
         </div >
 
 

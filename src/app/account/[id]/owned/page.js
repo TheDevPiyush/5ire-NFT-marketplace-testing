@@ -121,6 +121,7 @@ export default function page() {
     toast({
       title: 'NFT approved and added to the marketplace. ✅'
     })
+    refetch
     setItemId(null);
   }, [txApproveNFt, txApproveNFTSuccess])
 
