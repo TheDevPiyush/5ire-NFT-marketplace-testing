@@ -52,7 +52,9 @@ export default function AccountLayout({ children, params }) {
         </Card>
       </div>
 
-      <nav className="my-4 text-lg">
+
+
+      <nav className="text-lg">
         <div className="container flex">
           <ul className="flex space-x-4">
             {navItems.map((item) => (
@@ -60,13 +62,16 @@ export default function AccountLayout({ children, params }) {
                 <Link
                   href={item.path}
                   className={`text-gray-300 hover:text-white px-3 py-2 ${pathname === item.path ? "border-b-2 border-white text-white" : ""
-                    }`}
-                >
+                    }`}>
                   {item.name}
                 </Link>
               </li>
             ))}
           </ul>
+        </div>
+        <div className="note text-muted-foreground gap-3 flex items-center justify-start my-3 text-base">
+          <i class="fa fa-info-circle" aria-hidden="true"></i>
+          If you want to approve a listed NFT for transactions, Please Un-list and List again, with necessary confirmation from wallet.
         </div>
       </nav>
       {children}

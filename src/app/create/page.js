@@ -220,7 +220,7 @@ export default function createNFTPage() {
         address: MarketplaceAddress,
         functionName: 'listNFTWithNative',
         args: [logs[0].args.itemId, price],
-        value: parseEther('1')
+        value: parseEther('0.5')
       })
     }
 

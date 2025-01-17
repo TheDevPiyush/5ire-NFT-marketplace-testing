@@ -20,7 +20,7 @@ export default function page() {
 
 
   // Hook to fetch and store NFTs globally in the App,
-  const { NFTs, loading, error, refetch } = useNFTContext();
+  const { nftMetadataList, loading, error, refetch } = useNFTContext();
 
 
   const sampleTableData = [
@@ -209,13 +209,13 @@ export default function page() {
   return (
     <>
       <div className='w-full h-full'>
-        {NFTs &&
+        {nftMetadataList &&
           <>
             <h1 className='font-bold m-2 text-3xl flex justify-start'>
               Latest Drops on 5ireChain
             </h1>
             <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-              <LatestDrop NFTs={NFTs} loadingState={loading} />
+              <LatestDrop nftMetadataList={nftMetadataList} loadingState={loading} />
             </div>
           </>}
 
