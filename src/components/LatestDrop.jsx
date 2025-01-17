@@ -13,11 +13,11 @@ import { useToast } from '@/hooks/use-toast';
 import { Turtle } from 'lucide-react';
 import LoadingCard from './LoadingCard';
 
-export default function LatestDrop({ NFTs }) {
+export default function LatestDrop({ NFTs, loadingState }) {
 
 
     const [nftMetadataList, setNftMetadataList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(loadingState);
     const [error, setError] = useState(false)
     const { address, isConnected, isDisconnected } = useAccount();
     const { toast } = useToast();
@@ -78,7 +78,6 @@ export default function LatestDrop({ NFTs }) {
     useEffect(() => {
         async function fetchMetadataForNFTs() {
             try {
-                setLoading(true)
                 const metadataPromises = NFTs.map(async (nft) => {
                     const response = await fetch(nft.nftURI);
                     if (!response.ok) {
@@ -92,17 +91,12 @@ export default function LatestDrop({ NFTs }) {
             } catch (err) {
                 console.error('Error fetching NFT metadata:', err);
                 setError(err);
-                setLoading(false)
-            } finally {
-                setLoading(false);
             }
         }
 
         // Only fetch if there are NFTs to process
         if (NFTs && NFTs.length > 0) {
             fetchMetadataForNFTs();
-        } else {
-            setLoading(false);
         }
     }, [NFTs]);
 
@@ -114,78 +108,71 @@ export default function LatestDrop({ NFTs }) {
 
         !loading ?
 
-            <div className='w-[95%] justify-center flex items-center h-fit select-none flex-wrap' >
-                <Carousel className='w-full'>
-                    <CarouselPrevious />
-                    <CarouselContent>
-                        {nftMetadataList.map((item, index) => (
-                            <CarouselItem key={index} className="basis-1/2 md:basis-1/5 lg:basis-1/7">
-                                <Card className='cursor-pointer border-2 p-2'>
-                                    <div className="flex flex-col rounded-md items-center justify-center">
-                                        <div className='overflow-hidden rounded-sm  aspect-video bg-red'>
-                                            <img className='hover:scale-110 transition-all bg-contain' src={item.metadata.image} alt="" />
+            <div className='w-full p-3 justify-center items-center h-screen overflow-auto select-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6' >
+                {nftMetadataList.map((item, index) => (
+                    <Card className='cursor-pointer border-2 p-3'>
+                        <div className="flex flex-col rounded-md items-center justify-center">
+                            <div className='overflow-hidden rounded-sm  aspect-video bg-red'>
+                                <img className='hover:scale-110 transition-all bg-contain' src={item.metadata.image} alt="" />
+                            </div>
+                            <div className="w-full text-left my-2">
+                                <div className='Name-Div mx-2'>
+                                    <div className='Username my-1 w-full flex items-center justify-between text-muted-foreground'>
+
+                                        <div className='w-[50%] text-[1rem] overflow-hidden'>
+                                            {item.isListed && <>
+                                                {item.price.toString()} 5ire
+                                            </>}
                                         </div>
-                                        <div className="w-full text-left my-2">
-                                            <div className='Name-Div mx-2'>
-                                                <div className='Username my-1 w-full flex items-center justify-between text-muted-foreground'>
-
-                                                    <div className='w-[50%] text-[1rem] overflow-hidden'>
-                                                        {item.isListed && <>
-                                                            {item.price.toString()} 5ire
-                                                        </>}
-                                                    </div>
-                                                    <div className='cursor-pointer overflow-hidden text-ellipsis w-[50%] text-right text-sm font-bold hover:text-blue-500'>
-                                                        {truncateAddress(item.owner)}
-                                                    </div>
-                                                </div>
-
-                                                <div className='font-bold my-2 flex justify-between text-[1.2rem]'>
-                                                    {item.metadata.name}
-                                                    {item.isListed
-                                                        ?
-                                                        <span className='text-green-400 items-center font-medium text-sm'>
-                                                            <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-green-600' /> Listed
-                                                        </span>
-                                                        :
-                                                        <span className='text-red-400 items-center font-medium text-sm'>
-                                                            <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-red-400' /> Not Listed
-                                                        </span>
-                                                    }
-                                                </div>
-                                                <div className='text-[0.8rem] text-muted-foreground'>
-                                                    {new Date(Number(item.timestamp) * 1000).toLocaleString()}
-                                                </div>
-                                                <Button
-                                                    onClick={() => handleBuyNFT(item)}
-                                                    className={`my-3 py-5 text-base w-full font-bold ${!item.isListed ? 'bg-accent' : 'bg-primary'}`}
-                                                    disabled={!item.isListed || currentTransactionItemId === item.itemId}
-                                                >
-                                                    {!item.isListed ? (
-                                                        "Not Listed"
-                                                    ) : (
-                                                        <>
-                                                            {currentTransactionItemId === item.itemId
-                                                                ?
-                                                                <>
-                                                                    <span>Transacting...</span>
-                                                                    <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-accent border-r-transparent"></span>
-                                                                </>
-                                                                :
-                                                                <>
-                                                                    <span className='animate-pulse'>Buy</span>
-                                                                </>
-                                                            }
-                                                        </>
-                                                    )}
-                                                </Button>
-                                            </div>
+                                        <div className='cursor-pointer overflow-hidden text-ellipsis w-[50%] text-right text-sm font-bold hover:text-blue-500'>
+                                            {truncateAddress(item.owner)}
                                         </div>
                                     </div>
-                                </Card>
-                            </CarouselItem>))}
-                    </CarouselContent>
-                    <CarouselNext />
-                </Carousel>
+
+                                    <div className='font-bold my-2 flex justify-between text-[1.2rem]'>
+                                        {item.metadata.name}
+                                        {item.isListed
+                                            ?
+                                            <span className='text-green-400 items-center font-medium text-sm'>
+                                                <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-green-600' /> Listed
+                                            </span>
+                                            :
+                                            <span className='text-red-400 items-center font-medium text-sm'>
+                                                <span className='inline-block h-1 w-1 rounded-full border-4 border-solid border-red-400' /> Not Listed
+                                            </span>
+                                        }
+                                    </div>
+                                    <div className='text-[0.8rem] text-muted-foreground'>
+                                        {new Date(Number(item.timestamp) * 1000).toLocaleString()}
+                                    </div>
+                                    <Button
+                                        onClick={() => handleBuyNFT(item)}
+                                        className={`my-3 py-5 text-base w-full font-bold ${!item.isListed ? 'bg-accent' : 'bg-primary'}`}
+                                        disabled={!item.isListed || currentTransactionItemId === item.itemId}
+                                    >
+                                        {!item.isListed ? (
+                                            "Not Listed"
+                                        ) : (
+                                            <>
+                                                {currentTransactionItemId === item.itemId
+                                                    ?
+                                                    <>
+                                                        <span>Transacting...</span>
+                                                        <span className="inline-block h-6 w-6 animate-spin rounded-full border-2 border-solid border-accent border-r-transparent"></span>
+                                                    </>
+                                                    :
+                                                    <>
+                                                        <span className='animate-pulse'>Buy</span>
+                                                    </>
+                                                }
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                ))}
             </div >
             :
             <LoadingCard />

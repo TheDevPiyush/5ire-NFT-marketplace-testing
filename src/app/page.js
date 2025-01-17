@@ -7,108 +7,21 @@ import { useAccount, useReadContract } from 'wagmi';
 import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
 import LoadingCard from '@/components/LoadingCard'
+import { useNFTContext } from '@/hooks/useNFTcontext';
 export default function page() {
   const { searchQuery } = useContext(SearchContext);
   const { address, isConnected, } = useAccount()
 
-  const [NFTs, setNFTs] = useState([]);
+  // const [NFTs, setNFTs] = useState([]);
 
   const [MarketplaceAddress, setMarketplaceAddress] = useState('0x6f42F3F1aE13d23B302555C700DD61255B3A6Eb6');
   const MarketPlaceAbi = _abiMarketPlace.abi;
   const MarketplaceByteCode = _abiMarketPlace.bytecode;
 
-  // THIS HOOK WILL `GET ALL NFTs` BY USER FROM MARKETPLACE CONTRACT
-  const {
-    data: getALLNFTsdata,
-    isLoading: getALLNFTsdataLoading,
-    error: getALLOwnedNFTsdataError,
-    refetch: getAllNFTs,
-    isSuccess: getALLNFTsdataSuccess
-  } = useReadContract({
-    abi: MarketPlaceAbi,
-    address: MarketplaceAddress,
-    functionName: 'getAllNFTs',
-    args: [],
-    enabled: true,
-  });
 
-  useEffect(() => {
-    getAllNFTs()
-  }, [])
+  // Hook to fetch and store NFTs globally in the App,
+  const { NFTs, loading, error, refetch } = useNFTContext();
 
-  useEffect(() => {
-    if (getALLNFTsdata) setNFTs(getALLNFTsdata);
-  }, [getALLNFTsdataSuccess])
-
-
-  const SampleNFTs = [
-    {
-      name: "Shimmering Owl #312",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeiamqpt7cu63n7bahj7h2nx6m77vmwo4r5onnrmqshp3qpwu32m2yi.ipfs.dweb.link%2F",
-      user: "OwlEnthusiast",
-      Price: "0.014 5ire"
-    },
-    {
-      name: "Pinata First Upload",
-      img: "https://aquamarine-decent-panther-758.mypinata.cloud/ipfs/bafybeidhwlfcwpinhwcav3wr7wq22xigs5r2k6h23ng6oxtniolbxgawge?pinataGatewayToken=jAks4PshXk5bknw5rGhPdrSei7Elu4MyH5kTvK6H3AAnZ2SrS_cAEG0p-coH00z7",
-      user: "OwlEnthusiast",
-      Price: "0.014 5ire"
-    },
-    {
-      name: "Cyber Samurai #88",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeiblh5zuihp5uuil3ir23j4gblzds7sdkic6bm3ezpolur3zepdo3m.ipfs.dweb.link%2F",
-      user: "BladeRunner",
-      Price: "0.09 5ire"
-    },
-    {
-      name: "Galactic Gecko #501",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeienkiqduxl4lfyqzl7qeq46ap6mr2qvvblqyn55z5mcahsitqxtuy.ipfs.w3s.link%2Fprereveal.gf.gif",
-      user: "StarVox",
-      Price: "0.0032 5ire"
-    },
-    {
-      name: "Dragon Scale #7",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fcreator-hub-prod.s3.us-east-2.amazonaws.com%2Ford-alchemist_pfp_1735895236608.png",
-      user: "MythicMaster",
-      Price: "0.0025 5ire"
-    },
-    {
-      name: "Ape Hustle #211",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fimg.reservoir.tools%2Fimages%2Fv2%2Fapechain%2FWOC71RNEaE4WFlvhixBQzp%252Ftg77fQSzDPjBnVW%252BltobvuUvG10wYVp2hdKfYcSja",
-      user: "BigBanana",
-      Price: "0.1 5ire"
-    },
-    {
-      name: "Shimmering Owl #312",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeiamqpt7cu63n7bahj7h2nx6m77vmwo4r5onnrmqshp3qpwu32m2yi.ipfs.dweb.link%2F",
-      user: "OwlEnthusiast",
-      Price: "0.014 5ire"
-    },
-    {
-      name: "Cyber Samurai #88",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeiblh5zuihp5uuil3ir23j4gblzds7sdkic6bm3ezpolur3zepdo3m.ipfs.dweb.link%2F",
-      user: "BladeRunner",
-      Price: "0.09 5ire"
-    },
-    {
-      name: "Galactic Gecko #501",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fbafybeienkiqduxl4lfyqzl7qeq46ap6mr2qvvblqyn55z5mcahsitqxtuy.ipfs.w3s.link%2Fprereveal.gf.gif",
-      user: "StarVox",
-      Price: "0.0032 5ire"
-    },
-    {
-      name: "Dragon Scale #7",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fcreator-hub-prod.s3.us-east-2.amazonaws.com%2Ford-alchemist_pfp_1735895236608.png",
-      user: "MythicMaster",
-      Price: "0.0025 5ire"
-    },
-    {
-      name: "Ape Hustle #211",
-      img: "https://img-cdn.magiceden.dev/autoquality:size:512000:20:80/rs:fill:640:0:0/plain/https%3A%2F%2Fimg.reservoir.tools%2Fimages%2Fv2%2Fapechain%2FWOC71RNEaE4WFlvhixBQzp%252Ftg77fQSzDPjBnVW%252BltobvuUvG10wYVp2hdKfYcSja",
-      user: "BigBanana",
-      Price: "0.1 5ire"
-    }
-  ];
 
   const sampleTableData = [
     {
@@ -302,7 +215,7 @@ export default function page() {
               Latest Drops on 5ireChain
             </h1>
             <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-              <LatestDrop NFTs={NFTs} />
+              <LatestDrop NFTs={NFTs} loadingState={loading} />
             </div>
           </>}
 

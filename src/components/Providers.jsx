@@ -11,6 +11,7 @@ import { config } from "@/lib/wagamiConfig";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { darkTheme, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css';
+import { NFTProvider } from '@/hooks/useNFTcontext'
 
 export default function Providers({ children }) {
 
@@ -36,7 +37,9 @@ export default function Providers({ children }) {
                                     <AppSidebar />
                                     <Navbar />
                                     <div className='w-full mt-16 px-3'>
-                                        {children}
+                                        <NFTProvider>
+                                            {children}
+                                        </NFTProvider>
                                     </div>
                                 </div>
                             </SearchProvider>
