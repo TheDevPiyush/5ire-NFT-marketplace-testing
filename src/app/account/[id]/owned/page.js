@@ -121,7 +121,7 @@ export default function page() {
     toast({
       title: 'NFT approved and added to the marketplace. ✅'
     })
-    refetch
+    window.location.reload();
     setItemId(null);
   }, [txApproveNFt, txApproveNFTSuccess])
 
@@ -147,7 +147,7 @@ export default function page() {
       toast({
         title: "NFT unlisted successfully ✅"
       })
-      refetch;
+      window.location.reload();
       setItemId(null);
     }
   }, [unListNFTtoMarketPlaceContractError, unListNFTtoMarketPlaceContractSuccess, ListNFTtoMarketPlaceContractError])

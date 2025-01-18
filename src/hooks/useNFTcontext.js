@@ -22,29 +22,34 @@ export const NFTProvider = ({ children }) => {
         isLoading: getALLNFTsdataLoading,
         error: getALLOwnedNFTsdataError,
         refetch: getAllNFTs,
-        isSuccess: getALLNFTsdataSuccess
+        isSuccess: getALLNFTsdataSuccess,
+        isRefetching: getAllNFTsRefetching,
+        isStale: isStaleNFTs,
+
+
     } = useReadContract({
         abi: _abiMarketPlace.abi,
         address: MarketplaceAddress,
         functionName: 'getAllNFTs',
         args: [],
         enabled: true,
+        staleTime: 0
     });
 
     // Fetch all NFTs when the component mounts
+    const fetchNFTs = async () => {
+        try {
+            setLoading(true);
+            await getAllNFTs();
+        } catch (err) {
+            setError(err.message || 'Failed to fetch NFTs');
+        } finally {
+            setLoading(false);
+        }
+    };
     useEffect(() => {
-        const fetchNFTs = async () => {
-            try {
-                setLoading(true);
-                await getAllNFTs();
-            } catch (err) {
-                setError(err.message || 'Failed to fetch NFTs');
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchNFTs();
-    }, [getAllNFTs, address]);
+    }, [getAllNFTs, address, isStaleNFTs]);
 
     // Update NFT data and fetch metadata
     useEffect(() => {
@@ -86,9 +91,9 @@ export const NFTProvider = ({ children }) => {
             value={{
                 NFTs,
                 nftMetadataList,
-                loading: getALLNFTsdataLoading || loading,
+                loading: getALLNFTsdataLoading || loading || getAllNFTsRefetching,
                 error,
-                refetch: getAllNFTs,
+                refetch: fetchNFTs,
             }}>
             {children}
         </NFTContext.Provider>

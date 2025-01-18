@@ -1,27 +1,11 @@
 "use client"
 import LatestDrop from '@/components/LatestDrop';
 import TableData from '@/components/TableData';
-import { SearchContext } from '@/hooks/SearchContextHook';
-import React, { useContext, useEffect, useState } from 'react'
-import { useAccount, useReadContract } from 'wagmi';
+import React, { useState } from 'react'
 import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
-import LoadingCard from '@/components/LoadingCard'
-import { useNFTContext } from '@/hooks/useNFTcontext';
+import { Button } from '@/components/ui/button';
 export default function page() {
-  const { searchQuery } = useContext(SearchContext);
-  const { address, isConnected, } = useAccount()
-
-  // const [NFTs, setNFTs] = useState([]);
-
-  const [MarketplaceAddress, setMarketplaceAddress] = useState('0x6f42F3F1aE13d23B302555C700DD61255B3A6Eb6');
-  const MarketPlaceAbi = _abiMarketPlace.abi;
-  const MarketplaceByteCode = _abiMarketPlace.bytecode;
-
-
-  // Hook to fetch and store NFTs globally in the App,
-  const { nftMetadataList, loading, error, refetch } = useNFTContext();
-
 
   const sampleTableData = [
     {
@@ -205,19 +189,20 @@ export default function page() {
       owners: "3.2K"
     }
   ];
+  const [sortOrder, setSortOrder] = useState('Latest NFTs');
 
   return (
     <>
       <div className='w-full h-full'>
-        {nftMetadataList &&
-          <>
-            <h1 className='font-bold m-2 text-3xl flex justify-start'>
-              Latest Drops on 5ireChain
-            </h1>
-            <div className='py-3 flex flex-col items-center justify-center border-[1px] border-muted rounded-lg'>
-              <LatestDrop nftMetadataList={nftMetadataList} loadingState={loading} />
-            </div>
-          </>}
+        <h1 className='font-bold m-2 text-3xl flex justify-start'>
+          Latest Drops on 5ireChain
+        </h1>
+        <Button className="mx-3 my-2 font-bold" onClick={() => { sortOrder === "Latest NFTs" ? setSortOrder('Oldest NFTs') : setSortOrder('Latest NFTs') }} variant="secondary">
+          {sortOrder} <i class={`fa fa-arrow-${sortOrder === "Latest NFTs" ? "up" : "down"}`} aria-hidden="true"></i>
+        </Button>
+        <div className='py-3 border-[1px] border-muted rounded-lg'>
+          <LatestDrop sortOrder={sortOrder} />
+        </div>
 
         <h1 className='my-3  font-bold  text-3xl'>
           Trending Collections (SAMPLE DATA)

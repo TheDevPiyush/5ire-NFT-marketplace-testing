@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 
 export default function LoadingCard() {
     return (
-        Array.from({ length: 15  }).map(() =>
-            <Card className='cursor-pointer border-2 p-2'>
+        Array.from({ length: 4 }).map(() =>
+            <Card className='cursor-pointer animate-pulse border-2 p-2'>
                 <div className="flex flex-col rounded-md items-center justify-center">
                     <div className='bg-accent h-[150px] overflow-hidden rounded-sm  aspect-video bg-red'>
 
