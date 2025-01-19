@@ -82,6 +82,9 @@ A Next.js-based NFT Marketplace project, leveraging [Shadcn UI](https://ui.shadc
 
 - Users can purchase any NFT listed on the marketplace (provided they have sufficient funds).
 
+### Royalty
+- If a NFT is bought on the marketplace, a small portion of the sale price would be sent to the original creator as royalty fee.
+
 ### Listing Purchased NFTs
 
 - If a user owns NFTs (by purchase or mint), they can choose to list them for sale on the marketplace from their account.
