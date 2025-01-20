@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Command, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { SidebarTrigger } from './ui/sidebar';
 import { SearchContext } from '@/hooks/SearchContextHook';
-import { BrowserProvider } from 'ethers';
 import { useTheme } from 'next-themes';
 
 import {
@@ -16,11 +15,12 @@ import {
 import { useToast } from '@/hooks/use-toast';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useAccountEffect } from 'wagmi';
-
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { db } from "@/utils/firebaseConfig";
 const Navbar = () => {
 
     const { setSearchQuery } = useContext(SearchContext);
-    const { account, chain } = useAccount();
+    const { account, chain, address } = useAccount();
     const dialogTriggerRef = useRef(null);
     const [loading, setLoading] = useState(false)
     const ExampleSearchSuggestions = [
@@ -31,13 +31,26 @@ const Navbar = () => {
     ]
     const { toast } = useToast()
 
-    const { setTheme, theme } = useTheme();
-    const [logoUrl, setLogoURl] = useState('https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75')
+    const checkAndCreateUser = async () => {
+        try {
+            const docRef = doc(db, "users", address);
+            const docSnap = await getDoc(docRef);
 
-    const dropdownMenuItems = [
-        { title: "Profile", url: `/account/${account}`, icon: "fa-duotone fa-light fa-user", },
-        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
-    ];
+            if (!docSnap.exists()) {
+                await setDoc(docRef, {
+                    username: address,
+                    email: "",
+                    profilePicUrl: "https://images.pexels.com/photos/3970396/pexels-photo-3970396.jpeg?auto=compress&cs=tinysrgb&w=600"
+                });
+            }
+        } catch (error) {
+            console.error("Error checking/creating document:", error);
+        }
+    }
+
+    useEffect(() => {
+        checkAndCreateUser();
+    }, [address])
 
     useAccountEffect({
 
@@ -54,14 +67,6 @@ const Navbar = () => {
         }
     })
 
-    useEffect(() => {
-        if (theme === 'light') {
-            setLogoURl('https://upload.wikimedia.org/wikipedia/commons/1/12/5ire-logo2024.png')
-        }
-        else {
-            setLogoURl('https://5ire.org/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Flogo_light.57910aff.png&w=256&q=75')
-        }
-    }, [theme])
     return (
         <div className="w-full fixed z-10">
             <nav className="flex items-center
@@ -70,7 +75,6 @@ const Navbar = () => {
                 {/* Sidebar Trigger */}
                 <div className='flex items-center gap-4'>
                     <SidebarTrigger className='scale-150 bg-accent' />
-                    <img class='hidden md:block lg:block w-20' src={logoUrl} alt="Logo" />
                 </div>
 
                 {/* Search Button with Dialog */}

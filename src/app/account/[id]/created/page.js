@@ -1,3 +1,8 @@
-export default function created() {
-  return <div>Created</div>;
+import React from 'react'
+
+export default function page() {
+  
+  return (
+    <div>page</div>
+  )
 }

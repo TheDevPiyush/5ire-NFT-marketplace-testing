@@ -65,7 +65,7 @@ export function AppSidebar() {
                                     <SidebarMenuButton className='hover:bg-mute focus:bg-mute' asChild>
                                         <Link
                                             className={`flex text-[1.05rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location.includes(`/account/${address}`) ? "bg-secondary font-extrabold" : ''} `}
-                                            href={`/account/${address}`}>
+                                            href={`/account/${address}/owned`}>
                                             <i className="fa-solid fa-user"></i>
                                             <span>Account</span>
                                         </Link>
