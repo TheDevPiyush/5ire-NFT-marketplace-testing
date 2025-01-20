@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
 import { useAccount } from "wagmi";
@@ -16,6 +16,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -36,6 +37,7 @@ export default function AccountLayout({ children, params }) {
   const [userInputName, setUserInputName] = useState(userData.userName || "");
   const [userInputEmail, setUserInputEmail] = useState(userData.email || "");
   const [selectedPic, setSelectedpic] = useState(null);
+  const dialogCloseRef = useRef();
 
   const handleFileChange = (e) => {
     if (e.target.files?.[0]) {
@@ -88,6 +90,7 @@ export default function AccountLayout({ children, params }) {
       });
       toast({ title: "Details Updated Successfully ✅" })
       setLoading(false);
+      dialogCloseRef.current.click();
       fetchUserData();
     } catch (error) {
       toast({ title: "Couldn't update details, Please try again 🛑" })
@@ -190,6 +193,9 @@ export default function AccountLayout({ children, params }) {
                 <Button onClick={() => { updateUserData() }} disabled={loading} className="p-5 rounded-2xl" type="submit">
                   {loading ? "Saving...." : "Save Details"}
                 </Button>
+                <DialogClose ref={dialogCloseRef} className="hidden">
+                  Close
+                </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
