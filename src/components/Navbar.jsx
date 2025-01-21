@@ -41,7 +41,8 @@ const Navbar = () => {
                     walletAddress: address,
                     username: address,
                     email: "",
-                    profilePicUrl: "https://images.pexels.com/photos/3970396/pexels-photo-3970396.jpeg?auto=compress&cs=tinysrgb&w=600"
+                    profilePicUrl: "https://images.pexels.com/photos/3970396/pexels-photo-3970396.jpeg?auto=compress&cs=tinysrgb&w=600",
+                    twitterUrl: ""
                 });
             }
         } catch (error) {

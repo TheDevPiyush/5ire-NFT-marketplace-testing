@@ -27,6 +27,12 @@ export default function CreatorsTableData({ data }) {
                         <TableCell className="font-bold py-1 flex gap-3 items-center">
                             <span className='w-12 h-12 rounded-full overflow-hidden object-contain'><img className='w-fit object-contain' src={item?.profilePicUrl} alt="" /></span>
                             <span className='text-lg'>{item?.walletAddress ? item.username > 20 ? truncateAddress(item.username) : item.username : truncateAddress(item.address)}</span>
+                            {item?.walletAddress && item?.twitterUrl &&
+                                <span className='flex hover:brightness-75 items-center justify-center rounded-full bg-muted'>
+                                    <a className='p-2' target='_blank' href={item.twitterUrl || ""}>
+                                        <i class="fa-brands fa-twitter"></i>
+                                    </a>
+                                </span>}
                         </TableCell>
                     </TableRow>
                 ))}

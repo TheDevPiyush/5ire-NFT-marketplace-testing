@@ -36,6 +36,7 @@ export default function AccountLayout({ children, params }) {
   const [userData, setUserData] = useState({ userName: "", profilePicUrl: "", email: "" })
   const [userInputName, setUserInputName] = useState(userData.userName || "");
   const [userInputEmail, setUserInputEmail] = useState(userData.email || "");
+  const [userTwitter, setUserTwitter] = useState(userData.twitterUrl || "");
   const [selectedPic, setSelectedpic] = useState(null);
   const dialogCloseRef = useRef();
 
@@ -59,7 +60,7 @@ export default function AccountLayout({ children, params }) {
 
       if (docSnap.exists()) {
         const data = docSnap.data();
-        setUserData({ userName: data.username, profilePicUrl: data.profilePicUrl, email: data.email });
+        setUserData({ userName: data.username, profilePicUrl: data.profilePicUrl, email: data.email, twitterUrl: data.twitterUrl });
       }
       setLoading(false);
     } catch (error) {
@@ -86,7 +87,8 @@ export default function AccountLayout({ children, params }) {
       const docRef = doc(db, "users", address);
       await updateDoc(docRef, {
         username: userInputName,
-        email: userInputEmail
+        email: userInputEmail,
+        twitterUrl: `https://twitter.com/${userTwitter}`
       });
       toast({ title: "Details Updated Successfully ✅" })
       setLoading(false);
@@ -162,6 +164,10 @@ export default function AccountLayout({ children, params }) {
           <div className="flex-col">
             <p>{userData ? userData.userName.length > 15 ? truncateAddress(userData.userName) : userData.userName : ""}</p>
             <p className="text-muted-foreground text-base">{userData && userData.email}</p>
+            <a className='' target='_blank' href={userData && userData?.twitterUrl ? userData.twitterUrl : ""}>
+              <i class="fa-brands fa-twitter text-base">
+              </i>
+            </a>
           </div>
 
           <Dialog>
@@ -187,6 +193,12 @@ export default function AccountLayout({ children, params }) {
                     Email Id
                   </Label>
                   <Input onChange={(e) => { setUserInputEmail(e.target.value) }} id="email" value={userInputEmail} placeholder={userData.email ? userData.email : "someone@5ire.org"} className="col-span-3" />
+                </div>
+                <div className="grid grid-cols-4 items-center gap-4">
+                  <Label htmlFor="username" className="text-right">
+                    Twitter Handle
+                  </Label>
+                  <Input onChange={(e) => { setUserTwitter(e.target.value) }} id="email" value={userTwitter} placeholder={userData.twitterUrl ? userData.twitterUrl : "JohnDoe22"} className="col-span-3" />
                 </div>
               </div>
               <DialogFooter>

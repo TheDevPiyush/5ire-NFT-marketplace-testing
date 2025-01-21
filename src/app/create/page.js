@@ -305,7 +305,7 @@ export default function createNFTPage() {
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-400 mb-2">Upload NFT File</label>
           <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
-            <p className="text-gray-500 text-sm mb-2">PNG, GIF, WEBP, MP4, or MP3. Max 100mb.</p>
+            <p className="text-gray-500 text-sm mb-2">PNG, GIF, WEBP, MP4, or MP3. <span className="font-bold text-accent-foreground">Max 4 MB</span>.</p>
             <input type="file" onChange={handleFilesSelection} className="hidden" id="single-file-input" />
             <div className="flex gap-2 items-center justify-center">
               <label
