@@ -1,10 +1,15 @@
 "use client"
 import LatestDrop from '@/components/LatestDrop';
 import TableData from '@/components/TableData';
-import React, { useState } from 'react'
+import CreatorsTableData from '@/components/CreatorsTableData';
+import React, { useEffect, useState } from 'react'
 import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
 import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { useNFTContext } from '@/hooks/useNFTcontext';
+import { db } from '@/utils/firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore';
 export default function page() {
 
   const sampleTableData = [
@@ -190,22 +195,71 @@ export default function page() {
     }
   ];
   const [sortOrder, setSortOrder] = useState('Latest NFTs');
+  const [creatorsData, setCreatorsData] = useState([]);
+
+  const { nftMetadataList, refetch, loading } = useNFTContext();
+
+  const fetchCreatorsData = async () => {
+    try {
+      const creatorAddresses = nftMetadataList.map((item) => item.creator);
+
+      const uniqueAddresses = [...new Set(creatorAddresses)];
+
+      const docs = await Promise.all(
+        uniqueAddresses.map(async (address) => {
+          const docRef = doc(db, "users", address);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            return { address, ...docSnap.data() };
+          } else {
+            return { address, data: null };
+          }
+        })
+      );
+
+      setCreatorsData(docs);
+    } catch (error) {
+      console.error("Error fetching creators data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (nftMetadataList) {
+      fetchCreatorsData();
+    }
+  }, [nftMetadataList])
+
+  useEffect(() => {
+    if (creatorsData) {
+      console.log(creatorsData);
+    }
+  }, [creatorsData])
 
   return (
     <>
       <div className='w-full h-full'>
-        <h1 className='font-bold m-2 text-3xl flex justify-start'>
+        <h1 className='font-bold m-3 text-3xl flex justify-start'>
           Latest Drops on 5ireChain
         </h1>
-        <Button className="mx-3 my-2 font-bold" onClick={() => { sortOrder === "Latest NFTs" ? setSortOrder('Oldest NFTs') : setSortOrder('Latest NFTs') }} variant="secondary">
-          {sortOrder} <i class={`fa fa-arrow-${sortOrder === "Latest NFTs" ? "up" : "down"}`} aria-hidden="true"></i>
-        </Button>
-        <div className='py-3 border-[1px] border-muted rounded-lg'>
-          <LatestDrop sortOrder={sortOrder} />
+        <div className='py-3 border-[1px] border-muted h-1/4 overflow-hidden my-3 rounded-lg'>
+          <div className='rounded-xl bg-secondary hover:brightness-90 mx-5 my-2 w-fit flex justify-center items-center'>
+            <Link className='p-3' href={'/marketplace'}>Explore MarketPlace
+            </Link>
+            <i class="fa fa-arrow-circle-right p-1 text-lg" aria-hidden="true"></i>
+          </div>
+          <LatestDrop sortOrder={sortOrder} scrollable={true} />
         </div>
 
-        <h1 className='my-3  font-bold  text-3xl'>
-          Trending Collections (SAMPLE DATA)
+        <h1 className='my-5  font-bold  text-3xl'>
+          Creators on 5ireChain
+        </h1>
+        <div className='p-1 border-[1px] border-muted rounded-lg my-3'>
+          <CreatorsTableData data={creatorsData} />
+        </div>
+
+        <h1 className='my-5  font-bold  text-3xl'>
+          Trending Collections
         </h1>
         <div className='p-1 border-[1px] border-muted rounded-lg'>
           <TableData data={sampleTableData} />

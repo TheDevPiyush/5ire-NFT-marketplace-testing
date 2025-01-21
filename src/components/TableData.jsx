@@ -14,9 +14,7 @@ export default function TableData({ data }) {
     return (
         <Table>
             <TableCaption>
-                <Link href={'#'} className='hover:text-white'>
-                    View All Collections <i class="fa fa-arrow-right" aria-hidden="true"></i>
-                </Link>
+                The Table is not real time. It's just for visual presentation.
             </TableCaption>
             <TableHeader>
                 <TableRow>

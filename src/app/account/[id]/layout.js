@@ -29,7 +29,7 @@ export default function AccountLayout({ children, params }) {
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const navItems = [
-    { name: "Owned", path: `/account/${address}/owned` },
+    { name: "My NFTs", path: `/account/${address}/owned` },
   ];
 
 
@@ -227,7 +227,7 @@ export default function AccountLayout({ children, params }) {
               <li key={item.name}>
                 <Link
                   href={item.path}
-                  className={`text-gray-300 hover:text-white px-3 py-2 ${pathname === item.path ? "border-b-2 border-white text-white" : ""
+                  className={`text-gray-300 hover:text-white px-3 py-2 ${pathname === item.path ? "border-b-2 border-white text-white font-bold" : ""
                     }`}>
                   {item.name}
                 </Link>

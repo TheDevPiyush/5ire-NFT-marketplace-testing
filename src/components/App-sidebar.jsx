@@ -26,10 +26,9 @@ export function AppSidebar() {
     const { isConnected, address } = useAccount();
 
     const SidebarMenuiItems = [
-        { title: "Home", url: "/", icon: "fa-duotone fa-thin fa-house", },
-        { title: "Create NFT", url: "/create", icon: "fa-duotone fa-thin fa-paintbrush-fine", },
-        { title: "Marketplace", url: "/marketplace", icon: "fa-duotone fa-light fa-store", },
-        { title: "My NFTs", url: "/my-nfts", icon: "fa-duotone fa-thin fa-image", },
+        { title: "Home", url: "/", icon: "fa-duotone fa-thin fa-house", selectedIcon: "fa-solid fa-house" },
+        { title: "Create NFT", url: "/create", icon: "fa-duotone fa-thin fa-paintbrush-fine", selectedIcon: "fa-solid fa-paintbrush-fine" },
+        { title: "Marketplace", url: "/marketplace", icon: "fa-duotone fa-light fa-store", selectedIcon: "fa-solid fa-store" },
     ];
 
     useEffect(() => {
@@ -46,7 +45,7 @@ export function AppSidebar() {
                 <SidebarSeparator />
                 <SidebarGroup className='mt-8'>
                     <SidebarGroupContent>
-                        <SidebarGroupLabel>Application</SidebarGroupLabel>
+                        <SidebarGroupLabel className='my-3'>Application</SidebarGroupLabel>
                         <SidebarMenu>
                             {SidebarMenuiItems.map((item) => (
                                 <SidebarMenuItem className='hover:bg-mute focus:bg-mute' key={item.title}>
@@ -54,7 +53,7 @@ export function AppSidebar() {
                                         <Link
                                             className={`flex text-[1.05rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location === item.url ? "bg-secondary font-bold" : ''} `}
                                             href={item.url}>
-                                            <i className={item.icon}></i>
+                                            <i className={location === item.url ? item.selectedIcon : item.icon}></i>
                                             <span>{item.title}</span>
                                         </Link>
                                     </SidebarMenuButton>
@@ -64,9 +63,9 @@ export function AppSidebar() {
                                 <SidebarMenuItem>
                                     <SidebarMenuButton className='hover:bg-mute focus:bg-mute' asChild>
                                         <Link
-                                            className={`flex text-[1.05rem] hover:bg-mute focus:bg-mute items-center gap-1 ${location.includes(`/account/${address}`) ? "bg-secondary font-extrabold" : ''} `}
+                                            className={`flex hover:bg-mute focus:bg-mute items-center gap-1 ${location.includes(`/account/${address}`) ? "bg-secondary font-bold" : ''} `}
                                             href={`/account/${address}/owned`}>
-                                            <i className="fa-solid fa-user"></i>
+                                            <i className={`${location.includes(`/account/${address}`) ? "fa-solid fa-user bg-transparent" : 'fa-duotone fa-thin fa-user bg-transparent'}}`}></i>
                                             <span>Account</span>
                                         </Link>
                                     </SidebarMenuButton>

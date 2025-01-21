@@ -22,7 +22,7 @@ export default function createNFTPage() {
 
 
   const [uploadButtonState, setUploadButtonState] = useState({ state: "Mint NFT", disabled: false })
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState(null);
   const [urlList, setUrlList] = useState([]);
   const [price, setPrice] = useState(0);
   const [collectionName, setCollectionName] = useState("");
@@ -99,16 +99,16 @@ export default function createNFTPage() {
   const uploadFiles = async () => {
     // THIS FUNCTIONS UPLOADS MULTIPLE FILES TO ONE GROUP TO PINATA IPFS.
     try {
-      if (!files.length | !collectionName) {
+      if (!files.length || !price || !royalties || !description) {
         toast({
-          description: 'No file or collection name provided📂'
+          description: 'Please provide all details for the NFT 🖊️'
         })
         return;
       }
       setUploadButtonState({ state: "Uploading NFT Image...", disabled: true })
       const data = new FormData();
       files.forEach((file) => data.append("files", file));
-      data.set("collection", collectionName);
+      data.set("collection", address);
       data.set("price", price)
       data.set("name", name);
       data.set("description", description);
@@ -153,13 +153,14 @@ export default function createNFTPage() {
 
   // FILE SELECTION BY USER
   const handleFilesSelection = (event) => {
-    const selectedFiles = Array.from(event.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    if (event.target.files?.[0]) {
+      setFiles(event.target.files?.[0])
+    }
   };
 
   // REMOVING SELETED FILE BY USER
   const removeFile = () => {
-    setFiles([]);
+    setFiles(null);
   };
 
   // FOR NOW ONLY ONE IMAGE CAN BE MINTED INTO THE CONTRACT AT A TIME, BATCH MINTING WILL BE DONE LATER.
@@ -305,14 +306,14 @@ export default function createNFTPage() {
           <label className="block text-sm font-medium text-gray-400 mb-2">Upload NFT File</label>
           <div className="border-2 border-dashed border-gray-600 rounded-lg p-4 flex flex-col items-center">
             <p className="text-gray-500 text-sm mb-2">PNG, GIF, WEBP, MP4, or MP3. Max 100mb.</p>
-            <input type="file" multiple onChange={handleFilesSelection} className="hidden" id="single-file-input" />
+            <input type="file" onChange={handleFilesSelection} className="hidden" id="single-file-input" />
             <div className="flex gap-2 items-center justify-center">
               <label
                 htmlFor="single-file-input"
                 className="cursor-pointer bg-white hover:bg-slate-200 text-black py-2 px-4 rounded-lg">
-                <span>{files.length === 0 ? "Choose File" : `${files.length} file(s) selected`}</span>
+                <span>{!files ? "Choose File" : files?.name}</span>
               </label>
-              {files.length > 0 && (
+              {files && (
                 <button
                   onClick={removeFile}
                   className="bg-red-500 hover:bg-red-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-sm"
@@ -325,7 +326,7 @@ export default function createNFTPage() {
         </div>
         <div className="mb-6">
           <label htmlFor="price" className="block text-sm font-medium text-gray-400 mb-2">
-            Price
+            NFT Price
           </label>
           <input
             id="price"
@@ -353,7 +354,7 @@ export default function createNFTPage() {
           </Card>
         </div>
         {/* Collection Name Input */}
-        <div className="mb-6">
+        {/* <div className="mb-6">
           <label htmlFor="collectionName" className="block text-sm font-medium text-gray-400 mb-2">
             Collection Name
           </label>
@@ -364,16 +365,16 @@ export default function createNFTPage() {
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
             onChange={(e) => setCollectionName(e.target.value)}
           />
-        </div>
+        </div> */}
         {/* Name Input */}
         <div className="mb-6">
           <label htmlFor="name" className="block text-sm font-medium text-gray-400 mb-2">
-            Name
+            NFT Name
           </label>
           <input
             id="name"
             type="text"
-            placeholder="e.g. 'Redeemable Tiger logo with a cup'"
+            placeholder="e.g. 'A pink sheep'"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
             onChange={(e) => { setName(e.target.value) }}
           />
@@ -381,12 +382,12 @@ export default function createNFTPage() {
         {/* Description Input */}
         <div className="mb-6">
           <label htmlFor="description" className="block text-sm font-medium text-gray-400 mb-2">
-            Description (Optional)
+            NFT Description
           </label>
           <textarea
             id="description"
             rows={4}
-            placeholder="e.g. 'After purchasing, you'll be able to get the real cup'"
+            placeholder="e.g. 'A digital art of a pink sheep made by John Doe'"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
             onChange={(e) => { setDescription(e.target.value) }}
           ></textarea>
@@ -399,7 +400,7 @@ export default function createNFTPage() {
           <input
             id="royalties"
             type="number"
-            placeholder="e.g. 12"
+            placeholder="e.g. 10"
             className="w-full bg-gray-700 text-white rounded-lg border border-gray-600 p-3"
             onChange={(e) => { setRoyalties(e.target.value) }}
           />

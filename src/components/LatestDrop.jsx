@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import LoadingCard from './LoadingCard';
 import { useNFTContext } from '@/hooks/useNFTcontext';
 
-export default function LatestDrop({ sortOrder }) {
+export default function LatestDrop({ sortOrder, scrollable }) {
 
 
     const { address, isConnected, isDisconnected } = useAccount();
@@ -75,7 +75,7 @@ export default function LatestDrop({ sortOrder }) {
     return (
 
 
-        <div className={`w-full p-3 justify-center transition-all items-center  ${loading ? "overflow-hidden h-fit" : "overflow-auto h-screen"} select-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`} >
+        <div className={`w-full p-3 justify-center transition-all items-center ${scrollable ? 'overflow-auto' : 'overflow-hidden'}  ${loading ? "overflow-hidden h-fit" : "overflow-auto h-screen"} select-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`} >
             {!loading ? sortedNFTList.map((item, index) => (
                 <Card className='cursor-pointer border-2 p-3'>
                     <div className="flex flex-col rounded-md items-center justify-center">
