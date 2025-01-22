@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { truncateAddress } from "@/lib/truncateAddress";
-import { useAccount, useWriteContract, useTransactionReceipt } from "wagmi";
+import { useAccount, useWriteContract, useTransactionReceipt, useFeeData } from "wagmi";
 import { useToast } from "@/hooks/use-toast";
 import _abiNFT from '@/utils/FireNFTToken.json'
 import _abiMarketPlace from '@/utils/FireNFTMarketPlace.json'
@@ -23,7 +23,7 @@ export default function createNFTPage() {
 
   const [uploadButtonState, setUploadButtonState] = useState({ state: "Mint NFT", disabled: false })
   const [files, setFiles] = useState(null);
-  const [urlList, setUrlList] = useState([]);
+  const [Metadataurl, setMetadataUrl] = useState(null);
   const [price, setPrice] = useState(0);
   const [collectionName, setCollectionName] = useState("");
   const [name, setName] = useState("");
@@ -95,41 +95,52 @@ export default function createNFTPage() {
   } = useTransactionReceipt({ hash: ListToMarketplaceData })
 
 
-  // FUNCTION TO UPLOAD THE SELECTED IMAGE TO PINATA IPFS AND GENERATING A METADATA FILE FOR IT
   const uploadFiles = async () => {
-    // THIS FUNCTIONS UPLOADS MULTIPLE FILES TO ONE GROUP TO PINATA IPFS.
+    if (!files || !price || !royalties || !description) {
+      toast({
+        description: "Please provide all details for the NFT 🖊️",
+      });
+      return;
+    }
+
+    setUploadButtonState({ state: "Uploading NFT Image...", disabled: true });
+
+    const data = new FormData();
+    data.set("files", files);
+    data.set("collection", address);
+    data.set("price", price);
+    data.set("name", name);
+    data.set("description", description);
+    data.set("royalties", royalties);
+
     try {
-      if (!files || !price || !royalties || !description) {
-        toast({
-          description: 'Please provide all details for the NFT 🖊️'
-        })
-        return;
-      }
-      setUploadButtonState({ state: "Uploading NFT Image...", disabled: true })
-      const data = new FormData();
-      data.set("files", files)
-      data.set("collection", address);
-      data.set("price", price)
-      data.set("name", name);
-      data.set("description", description);
-      data.set("royalties", royalties);
-      const uploadRequest = await fetch("/api/files", {
+      const response = await fetch("/api/files", {
         method: "POST",
         body: data,
       });
-      const ipfsUrls = await uploadRequest.json();
-      setUrlList(ipfsUrls);
-      setUploadButtonState({ state: "Mint NFT", disabled: false })
-      toast({
-        title: `Image Uploaded Successfully ✅`,
-      })
-    } catch (e) {
-      console.error(e);
-      setUploadButtonState({ state: "Mint NFT", disabled: false })
 
-      toast({
-        description: 'Image Could Not Be Uploaded 🛑'
-      })
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result?.error || "Unknown error");
+      }
+
+      console.log("Upload result:", result.metaDataUrl);
+      setMetadataUrl(result.metaDataUrl);
+      setUploadButtonState({ state: "Mint NFT", disabled: false });
+      toast({ title: "Image Uploaded Successfully ✅" });
+    } catch (error) {
+      console.error("Upload error:", error);
+      if (error.message === "File size exceeds 4 MB limit") {
+        toast({
+          description: "Image size is too large. Consider using an image under 4 MB",
+        });
+      } else {
+        toast({
+          description: "Image Could Not Be Uploaded 🛑",
+        });
+      }
+      setUploadButtonState({ state: "Mint NFT", disabled: false });
     }
   };
 
@@ -141,9 +152,15 @@ export default function createNFTPage() {
       abi: NFTabi,
       address: NFTAddress,
       functionName: 'createNFTs',
-      args: [[urlList[0]]]
+      args: [[Metadataurl]]
     });
   }
+
+  useEffect(() => {
+    if (Metadataurl) {
+      uploadAndCreateNFT()
+    }
+  }, [Metadataurl])
 
   // CALCULATING PRICE BASED ON USER INPUT
   const calculatePrice = () => {
@@ -162,13 +179,6 @@ export default function createNFTPage() {
   const removeFile = () => {
     setFiles(null);
   };
-
-  // FOR NOW ONLY ONE IMAGE CAN BE MINTED INTO THE CONTRACT AT A TIME, BATCH MINTING WILL BE DONE LATER.
-  useEffect(() => {
-    if (urlList.length > 0) {
-      uploadAndCreateNFT();
-    }
-  }, [urlList])
 
   // CHECKING FOR SUCCESSFULL MINTING AND GETTING CREATE NFT EVENTS.
   useEffect(() => {

@@ -9,12 +9,20 @@ export async function POST(request: NextRequest) {
         const description = data.get("description") as string;
         const royalties = Number(data.get("royalties"));
         const price = Number(data.get("price"));
+        const file = data.get("files") as File | null;
 
-        const file = data.get("file") as File | null;
 
         if (!collectionName || !file) {
             return NextResponse.json(
                 { error: "Missing collection name or file" },
+                { status: 400 }
+            );
+        }
+
+        const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4 MB
+        if (file.size > MAX_FILE_SIZE) {
+            return NextResponse.json(
+                { error: "File size exceeds 4 MB limit" },
                 { status: 400 }
             );
         }
