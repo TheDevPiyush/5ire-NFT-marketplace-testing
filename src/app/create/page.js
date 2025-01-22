@@ -99,7 +99,7 @@ export default function createNFTPage() {
   const uploadFiles = async () => {
     // THIS FUNCTIONS UPLOADS MULTIPLE FILES TO ONE GROUP TO PINATA IPFS.
     try {
-      if (!files.length || !price || !royalties || !description) {
+      if (!files || !price || !royalties || !description) {
         toast({
           description: 'Please provide all details for the NFT 🖊️'
         })
