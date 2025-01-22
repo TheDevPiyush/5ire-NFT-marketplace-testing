@@ -107,7 +107,7 @@ export default function createNFTPage() {
       }
       setUploadButtonState({ state: "Uploading NFT Image...", disabled: true })
       const data = new FormData();
-      files.forEach((file) => data.append("files", file));
+      data.set("files", files)
       data.set("collection", address);
       data.set("price", price)
       data.set("name", name);

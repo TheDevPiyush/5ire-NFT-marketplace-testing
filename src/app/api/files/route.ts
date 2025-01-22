@@ -1,5 +1,3 @@
-
-// API Route Code
 import { NextResponse, type NextRequest } from "next/server";
 import { pinata } from "@/utils/config";
 
@@ -11,11 +9,12 @@ export async function POST(request: NextRequest) {
         const description = data.get("description") as string;
         const royalties = Number(data.get("royalties"));
         const price = Number(data.get("price"));
-        const files = data.getAll("files") as File[];
 
-        if (!collectionName || files.length === 0) {
+        const file = data.get("file") as File | null;
+
+        if (!collectionName || !file) {
             return NextResponse.json(
-                { error: "Missing collection name or files" },
+                { error: "Missing collection name or file" },
                 { status: 400 }
             );
         }
@@ -25,42 +24,33 @@ export async function POST(request: NextRequest) {
 
         const gatewayBaseURL = "https://gateway.pinata.cloud/ipfs/";
 
-        const allCids: string[] = [];
-        const metaDataUrls: string[] = [];
+        const { IpfsHash: imageHash } = await pinata.upload.file(file);
 
-        for (let i = 0; i < files.length; i++) {
-            const originalFile = files[i];
+        const metadata = {
+            name: name ?? "Item",
+            description: description || "",
+            royalties: royalties || 0,
+            price: price || 0,
+            image: `${gatewayBaseURL}${imageHash}`,
+        };
 
-            const { IpfsHash: imageHash } = await pinata.upload.file(originalFile);
+        const metadataBlob = new Blob([JSON.stringify(metadata)], {
+            type: "application/json",
+        });
+        const metadataFile = new File([metadataBlob], `${name}.json`, {
+            type: "application/json",
+        });
 
-            const metadata = {
-                name: `${name ?? "Item"}`,
-                description: description || "",
-                royalties: royalties || 0,
-                price: price || 0,
-                image: `${gatewayBaseURL}${imageHash}`,
-            };
-
-            const metadataBlob = new Blob([JSON.stringify(metadata)], {
-                type: "application/json",
-            });
-            const metadataFile = new File([metadataBlob], `${name}.json`, {
-                type: "application/json",
-            });
-
-            const { IpfsHash: metadataHash } = await pinata.upload.file(metadataFile);
-
-            allCids.push(imageHash, metadataHash);
-
-            metaDataUrls.push(`${gatewayBaseURL}${metadataHash}`);
-        }
+        const { IpfsHash: metadataHash } = await pinata.upload.file(metadataFile);
 
         await pinata.groups.addCids({
             groupId,
-            cids: allCids,
+            cids: [imageHash, metadataHash],
         });
 
-        return NextResponse.json(metaDataUrls, { status: 200 });
+        const metaDataUrl = `${gatewayBaseURL}${metadataHash}`;
+
+        return NextResponse.json({ metaDataUrl }, { status: 200 });
     } catch (e) {
         console.error(e);
         return NextResponse.json(
