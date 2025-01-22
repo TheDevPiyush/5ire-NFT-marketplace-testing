@@ -77,7 +77,7 @@ export default function LatestDrop({ sortOrder, scrollable }) {
 
         <div className={`w-full p-3 justify-center transition-all items-center ${scrollable ? 'overflow-auto' : 'overflow-hidden'}  ${loading ? "overflow-hidden h-fit" : "overflow-auto h-screen"} select-none grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6`} >
             {!loading ? sortedNFTList.map((item, index) => (
-                <Card className='cursor-pointer border-2 p-3'>
+                <Card key={item.itemId} className='cursor-pointer border-2 p-3'>
                     <div className="flex flex-col rounded-md items-center justify-center">
                         <div className='overflow-hidden rounded-sm  aspect-video bg-red'>
                             <img className='hover:scale-110 transition-all bg-contain' src={item.metadata.image} alt="" />

@@ -146,6 +146,7 @@ export default function createNFTPage() {
 
   // FUNCTION TO MINT THE METADATA TO NFT CONTRACT
   const uploadAndCreateNFT = async () => {
+    console.log(Metadataurl)
     setUploadButtonState({ state: "Minting your NFT...", disabled: true })
 
     await uploadToCreateNFTcontract({
