@@ -56,7 +56,7 @@ export default function createNFTPage() {
     isSuccess: txCreateNFTsuccess
   } = useTransactionReceipt({ hash: CreateNFTData })
 
-  // ------------- APPROVE THE NFT INTO THE MARKERTPLACE CONTRACT AND CHECK TRANSACTION SUCCESS --------------------------------
+  // ------------- APPROVE THE NFT INTO THE MARKERTPLACE CONTRACT AND CHECK TRANSACTION SUCCESS ------------------------------
   const {
     writeContractAsync: approveNFT,
     data: approveNFTData,
